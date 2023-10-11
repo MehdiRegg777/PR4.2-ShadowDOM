@@ -1,0 +1,7 @@
+CREATE TABLE usuaris (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    mail VARCHAR(255) NOT NULL,
+    pwdHash VARCHAR(255) NOT NULL,
+    token VARCHAR(255)
+);
