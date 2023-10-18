@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid')
 const database = require('./utilsMySQL.js')
 const shadowsObj = require('./utilsShadows.js')
 const app = express()
-const port = 3000
+const port = 3001
 
 // Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
 let hash0 = crypto.createHash('md5').update("1234").digest("hex")
@@ -22,10 +22,10 @@ let shadows = new shadowsObj()
 var db = new database()
 db.init({
   host: "localhost",
-  port: 3306,
+  port: 3308,
   user: "root",
   password: "pwd",
-  database: "world"
+  database: "BaseDatosUser"
 })
 
 // Publicar arxius carpeta ‘public’ 
