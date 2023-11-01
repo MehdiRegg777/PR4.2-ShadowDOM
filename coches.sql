@@ -27,21 +27,21 @@ CREATE DATABASE `coches` DEFAULT CHARACTER SET utf8mb4;
 USE `coches`;
 
 -- Crear una tabla llamada "Coches" para almacenar información de coches
-CREATE TABLE coches (
+CREATE TABLE coche (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     Marca VARCHAR(50),
     Modelo VARCHAR(50),
-    Año INT,
+    Any INT,
     Color VARCHAR(20),
-    Precio DECIMAL(10, 2)
+    Precio INT
 );
 
 -- Insertar algunos datos de ejemplo
-INSERT INTO coches (Marca, Modelo, Año, Color, Precio)
-VALUES ('Toyota', 'Corolla', 2020, 'Rojo', 18000.00);
+INSERT INTO coche (Marca, Modelo, Any, Color, Precio)
+VALUES ('Toyota', 'Corolla', 2020, 'Rojo', 18000);
 
-INSERT INTO coches (Marca, Modelo, Año, Color, Precio)
-VALUES ('Honda', 'Civic', 2019, 'Azul', 17000.00);
+INSERT INTO coche (Marca, Modelo, any, Color, Precio)
+VALUES ('Honda', 'Civic', 2019, 'Azul', 17000);
 
-INSERT INTO coches (Marca, Modelo, Año, Color, Precio)
-VALUES ('Ford', 'F-150', 2021, 'Negro', 28000.00);
+INSERT INTO coche (Marca, Modelo, Any, Color, Precio)
+VALUES ('Ford', 'F-150', 2021, 'Negro', 28000);
