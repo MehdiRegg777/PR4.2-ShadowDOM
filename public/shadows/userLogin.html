@@ -2,6 +2,28 @@
     <div id="viewInfo">
         <div class="title">Login info</div>
         <div id="infoUser">User Name</div>
+        <p>Base de datos de marcas de coches:</p>
+        <br>
+        
+        <br>
+        <button class="modButton" id="Create" data-view-type="Create">Create</button>
+        <button class="modButton" id="Modify" data-view-type="Modify">Modify</button>
+        <button class="modButton" id="Delete" data-view-type="Delete">Delete</button>
+        <br>
+        <div class="modView" id="CreateMod" style="display: none;">
+            <h6 class="title2">Create a car</h6>
+            <!-- Contenido de Create -->
+        </div>
+        <div class="modView" id="ModifyMod" style="display: none;">
+            <h6 class="title2">Modify a car</h6>
+            <!-- Contenido de Modify -->
+        </div>
+        <div class="modView" id="Deletemod" style="display: none;">
+            <h6 class="title2">Delete a car</h6>
+            <!-- Contenido de Delete -->
+        </div>
+        <br>
+
         <div id="infoLoading" class="loading">Loading ...</div>
         <div class="row">
             <button id="infoBtnLogOut">Logout</button>

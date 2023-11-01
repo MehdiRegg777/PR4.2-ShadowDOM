@@ -17,6 +17,16 @@ db.init({
   database: "BaseDatosUser"
 })
 
+// Crear i configurar l'objecte de la base de dades
+var db2 = new database()
+db2.init({
+  host: "localhost",
+  port: 3308,
+  user: "root",
+  password: "pwd",
+  database: "coches"
+})
+
 // Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
 // let hash0 = crypto.createHash('md5').update("1234").digest("hex")
 // let hash1 = crypto.createHash('md5').update("abcd").digest("hex")
@@ -104,7 +114,9 @@ async function ajaxCall (req, res) {
           result = {result: 'KO', message: 'Invalid callType'}
           break;
   }
-
+  let coches = await db2.query('select * from coche');
+  // result = { result: 'OK', coches: coches };
+  console.log(coches);
   // Retornar el resultat
   res.send(result)
 }

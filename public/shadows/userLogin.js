@@ -32,6 +32,14 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpPasswordCheck').addEventListener('input', this.checkSignUpPasswords.bind(this))
         this.shadow.querySelector('#signUpBtn').addEventListener('click', this.actionSignUp.bind(this))
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
+        ////
+    
+        this.shadow.querySelectorAll('.modButton').forEach(button => {
+            button.addEventListener('click', this.handleModButtonClick.bind(this));
+        });
+
+        // ...
+
 
         // Automàticament, validar l'usuari per 'token' (si n'hi ha)
         await this.actionCheckUserByToken()
@@ -74,7 +82,7 @@ class UserLogin extends HTMLElement {
             refButton.disabled = true
             break
         case 'logged':
-            refUserName.innerText = window.localStorage.getItem("userName")
+            refUserName.innerText = "Usuario: "+ window.localStorage.getItem("userName")
             refLoading.style.opacity = 0
             refButton.disabled = false
             break
@@ -197,7 +205,35 @@ class UserLogin extends HTMLElement {
         }
     }
 
-    async actionLogout() {
+    handleModButtonClick(event) {
+        const viewType = event.currentTarget.getAttribute('data-view-type');
+    
+        // Ocultar todas las vistas de modificación
+        this.shadow.querySelectorAll('.modView').forEach(view => {
+            view.style.display = 'none';
+        });
+    
+        // Mostrar la vista correspondiente
+        const viewToShow = this.shadow.querySelector(`#${viewType}Mod`);
+        if (viewToShow) {
+            viewToShow.style.removeProperty('display');
+        }
+    
+        // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
+        // switch (viewType) {
+        //     case 'Create':
+        //         // Acciones específicas para Create
+        //         break;
+        //     case 'Modify':
+        //         // Acciones específicas para Modify
+        //         break;
+        //     case 'Delete':
+        //         // Acciones específicas para Delete
+        //         break;
+        // }
+    }
+
+        async actionLogout() {
         // Mostrar la vista amb status 'loading'
         this.showView('viewInfo', 'loading')
 
