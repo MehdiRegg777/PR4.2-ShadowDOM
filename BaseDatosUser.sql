@@ -26,10 +26,9 @@ CREATE DATABASE `BaseDatosUser` DEFAULT CHARACTER SET utf8mb4;
 
 USE `BaseDatosUser`;
 
-CREATE TABLE usuaris (
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL,
-    mail VARCHAR(255) NOT NULL,
-    pwdHash VARCHAR(255) NOT NULL,
+    userName VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     token VARCHAR(255)
 );
