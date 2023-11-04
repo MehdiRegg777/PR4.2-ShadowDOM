@@ -66,7 +66,7 @@ async function getShadows(req, res) {
 
 
 // CREACION FILAS ******************************************************************************
-app.post('/createCar', actionCreateCar);S
+app.post('/createCar', actionCreateCar);
 
 // Configurar la direcció '/ajaxCall'
 app.post('/ajaxCall', ajaxCall)
