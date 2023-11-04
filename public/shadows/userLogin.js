@@ -48,7 +48,7 @@ class UserLogin extends HTMLElement {
         await this.actionCheckUserByToken()
     } 
 
-
+   // CREACION FILAS *******************************************************************************
 
     showCreateCarView() {
         this.showView('CreateMod', 'initial'); // Muestra el formulario para crear coches
@@ -56,26 +56,32 @@ class UserLogin extends HTMLElement {
         // ...
     }
 
-    async actionCreate() {
-        // Muestra la vista correspondiente al botón "Create" (si es relevante)
-        this.showView('CreateMod', 'initial'); // Muestra la vista de creación de carro
-        this.showView('ModifyMod', 'none'); // Por ejemplo, oculta otras vistas de modificación
-
-        // Lógica para la creación de un carro
-        let requestData = {
-            callType: 'createCar',
-            // Datos necesarios para crear un carro, si es el caso
-        };
-
-        let resultData = await this.callServer(requestData);
-        if (resultData.result === 'OK') {
-            // Si la creación tiene éxito, puedes realizar acciones adicionales
-            // Por ejemplo, mostrar un mensaje de éxito, actualizar la interfaz, etc.
-        } else {
-            // Si hay un error en la creación, manejarlo apropiadamente
-            // Por ejemplo, mostrar un mensaje de error, revertir cambios, etc.
+    async actionCreate(carData) {
+        this.showView('CreateMod', 'initial'); // Muestra la vista de creación de coches
+        this.showView('ModifyMod', 'none'); // Oculta otras vistas de modificación
+    
+        try {
+            let requestData = {
+                callType: 'createCar',
+                carData: carData // Datos necesarios para crear un coche
+            };
+    
+            let resultData = await this.callServer(requestData);
+            if (resultData.result === 'OK') {
+                // Si la creación tiene éxito, puedes realizar acciones adicionales
+                // Por ejemplo, mostrar un mensaje de éxito, actualizar la interfaz, etc.
+            } else {
+                // Si hay un error en la creación, manejarlo apropiadamente
+                // Por ejemplo, mostrar un mensaje de error, revertir cambios, etc.
+            }
+        } catch (error) {
+            console.error('Error creating car:', error);
+            // Manejar errores en la creación del coche
         }
     }
+    
+    // **********************************************************************************************************
+    
 
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
