@@ -110,14 +110,12 @@ async function ajaxCall (req, res) {
       case 'actionLogout':            result = await actionLogout(objPost); break
       case 'actionLogin':             result = await actionLogin(objPost); break
       case 'actionSignUp':            result = await actionSignUp(objPost); break
+      case 'actionCreateCar':         result = await actionCreateCar(objPost); break;  
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
   }
-  let coches = await db2.query('select * from coche');
-  // result = { result: 'OK', coches: coches };
-  console.log(coches);
-  // Retornar el resultat
+
   res.send(result)
 }
 
@@ -197,6 +195,33 @@ async function actionSignUp(objPost) {
     // Aquí puedes manejar los resultados si es necesario
 
     return { result: 'OK', userName: userName, tokenn: token };
+  } catch (error) {
+    // Manejar errores, por ejemplo:
+    console.error("Error al ejecutar la consulta:", error);
+    return { result: 'Error', error: error.message };
+  }
+}
+async function actionCreateCar(objPost) {
+  let marca = objPost.marca;
+  let modelo = objPost.modelo;
+  let color = objPost.color;
+  let any = parseInt(objPost.any, 10);
+  let precio = parseInt(objPost.precio, 10);
+  const ejemploUsuario = {
+    marca: marca,
+    modelo: modelo,
+    any: any,
+    color: color,
+    precio: precio
+  };
+
+  const sqlQuery2 = `INSERT INTO coche (marca, modelo, any, color, precio) VALUES ('${ejemploUsuario.marca}', '${ejemploUsuario.modelo}', '${ejemploUsuario.any}', '${ejemploUsuario.color}', '${ejemploUsuario.precio}')`;
+  try {
+    // Realizar la consulta a la base de datos y esperar la respuesta
+    const queryResult2 = await db2.query(sqlQuery2);
+    console.log('Query Result:', queryResult2); 
+
+    return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
   } catch (error) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);

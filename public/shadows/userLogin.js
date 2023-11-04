@@ -33,17 +33,41 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpBtn').addEventListener('click', this.actionSignUp.bind(this))
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
         ////
-    
         this.shadow.querySelectorAll('.modButton').forEach(button => {
             button.addEventListener('click', this.handleModButtonClick.bind(this));
         });
-
+        // Agregar el event listener para el botón de "Create"
+        this.shadow.querySelectorAll('.createCarButton').forEach(button => {
+            button.addEventListener('click', this.actionCreate.bind(this));
+        });
         // ...
 
 
         // Automàticament, validar l'usuari per 'token' (si n'hi ha)
         await this.actionCheckUserByToken()
     } 
+
+      // CREACION FILAS *************************
+      async actionCreate() {
+        let marcaInput = this.shadow.querySelector('#marcaInput')
+        let modeloInput = this.shadow.querySelector('#modeloInput')
+        let añoInput = this.shadow.querySelector('#añoInput')
+        let colorInput = this.shadow.querySelector('#colorInput')
+        let precioInput = this.shadow.querySelector('#precioInput')
+        // Mostrar la vista
+        this.showView('viewSignUpForm', 'loading')
+
+        let requestData = {
+            callType: 'actionCreateCar',
+            marca: marcaInput.value,
+            modelo: modeloInput.value,
+            any: añoInput.value,
+            color: colorInput.value,
+            precio: precioInput.value,
+        }
+        await this.callServer(requestData)
+        
+    }
 
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
@@ -330,6 +354,8 @@ class UserLogin extends HTMLElement {
         }
         return resultData
     }
+
+    
 }
 
 // Defineix l'element personalitzat
