@@ -33,14 +33,13 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpBtn').addEventListener('click', this.actionSignUp.bind(this))
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
         ////
-        // Agregar el event listener para el botón de "Create"
-        this.shadow.querySelector('#Create').addEventListener('click', this.showCreateCarView.bind(this));
-       
-    
         this.shadow.querySelectorAll('.modButton').forEach(button => {
             button.addEventListener('click', this.handleModButtonClick.bind(this));
         });
-
+        // Agregar el event listener para el botón de "Create"
+        this.shadow.querySelectorAll('.createCarButton').forEach(button => {
+            button.addEventListener('click', this.actionCreate.bind(this));
+        });
         // ...
 
 
@@ -48,57 +47,27 @@ class UserLogin extends HTMLElement {
         await this.actionCheckUserByToken()
     } 
 
-   // CREACION FILAS *******************************************************************************
+      // CREACION FILAS *************************
+      async actionCreate() {
+        let marcaInput = this.shadow.querySelector('#marcaInput')
+        let modeloInput = this.shadow.querySelector('#modeloInput')
+        let añoInput = this.shadow.querySelector('#añoInput')
+        let colorInput = this.shadow.querySelector('#colorInput')
+        let precioInput = this.shadow.querySelector('#precioInput')
+        // Mostrar la vista
+        this.showView('viewSignUpForm', 'loading')
 
-   showCreateCarView() {
-    const createView = this.shadow.querySelector('#CreateMod');
-    createView.style.display = 'block'; // Mostrar la vista de creación de coches
-    // También puedes ocultar otras vistas de modificación si es necesario
-    }
-
-    async actionCreate() {
-        this.showCreateCarView(); // Mostrar la vista para crear coches
-    
-        try {
-            // Obtener los valores del formulario
-            const marca = this.shadow.querySelector('#marcaInput').value;
-            const modelo = this.shadow.querySelector('#modeloInput').value;
-            const año = this.shadow.querySelector('#añoInput').value;
-            const color = this.shadow.querySelector('#colorInput').value;
-            const precio = this.shadow.querySelector('#precioInput').value;
-    
-            // Crear un objeto con los datos del coche
-            const carData = {
-                marca: marca,
-                modelo: modelo,
-                año: año,
-                color: color,
-                precio: precio
-            };
-    
-            let requestData = {
-                callType: 'createCar',
-                carData: carData // Datos necesarios para crear un coche
-            };
-    
-            let resultData = await this.callServer(requestData);
-            if (resultData.result === 'OK') {
-                // Si la creación tiene éxito, redirigir a la misma página
-                window.location.href = window.location.href; // Redirigir a la misma página
-                console.log('Coche creado exitosamente');
-            } else {
-                // Si hay un error en la creación, manejarlo apropiadamente
-                console.error('Error al crear el coche:', resultData.message);
-                // Por ejemplo, mostrar un mensaje de error, revertir cambios, etc.
-            }
-        } catch (error) {
-            console.error('Error creating car:', error);
-            // Manejar errores en la creación del coche
+        let requestData = {
+            callType: 'actionCreateCar',
+            marca: marcaInput.value,
+            modelo: modeloInput.value,
+            any: añoInput.value,
+            color: colorInput.value,
+            precio: precioInput.value,
         }
+        await this.callServer(requestData)
+        
     }
-    
-    
-    
 
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
@@ -385,6 +354,8 @@ class UserLogin extends HTMLElement {
         }
         return resultData
     }
+
+    
 }
 
 // Defineix l'element personalitzat

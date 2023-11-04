@@ -1,72 +1,99 @@
-const express = require('express');
-const crypto = require('crypto');
-const { v4: uuidv4 } = require('uuid');
-const database = require('./utilsMySQL.js');
-const shadowsObj = require('./utilsShadows.js');
-const app = express();
-const port = 3002;
+const express = require('express')
+const crypto = require('crypto')
+const url = require('url')
+const { v4: uuidv4 } = require('uuid')
+const database = require('./utilsMySQL.js')
+const shadowsObj = require('./utilsShadows.js')
+const app = express()
+const port = 3001
 
-// Crear y configurar el objeto de la base de datos para usuarios
-const db = new database();
+// Crear i configurar l'objecte de la base de dades
+var db = new database()
 db.init({
-  host: 'localhost',
+  host: "localhost",
   port: 3306,
-  user: 'root',
-  password: 'pwd',
-  database: 'BaseDatosUser'
-});
+  user: "root",
+  password: "pwd",
+  database: "BaseDatosUser"
+})
 
-// Crear y configurar el objeto de la base de datos para coches
-const db2 = new database();
+// Crear i configurar l'objecte de la base de dades
+var db2 = new database()
 db2.init({
-  host: 'localhost',
+  host: "localhost",
   port: 3308,
-  user: 'root',
-  password: 'pwd',
-  database: 'coches'
-});
+  user: "root",
+  password: "pwd",
+  database: "coches"
+})
 
-// Inicializar objeto de shadows
-const shadows = new shadowsObj();
+// Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
+// let hash0 = crypto.createHash('md5').update("1234").digest("hex")
+// let hash1 = crypto.createHash('md5').update("abcd").digest("hex")
+// let users = [
+//   {userName: 'user0', password: hash0, token: ''},
+//   {userName: 'user1', password: hash1, token: ''}
+// ]
 
-app.use(express.static('public'));
+
+
+// Inicialitzar objecte de shadows
+let shadows = new shadowsObj()
+
+// Publicar arxius carpeta ‘public’ 
+app.use(express.static('public'))
+
+// Configurar per rebre dades POST en format JSON
 app.use(express.json());
 
-const httpServer = app.listen(port, appListen);
 
-async function appListen() {
-  await shadows.init('./public/index.html', './public/shadows');
-  console.log(`Example app listening on: http://localhost:${port}`);
+// Configurar dirección '/testDB'
+// app.get('/testDB', testDB);
+
+// async function testDB(req, res) {
+//   try {
+//     let rst = await db.query('select * from users');
+//     res.send(rst);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Error al acceder a la base de datos');
+//   }
+// }
+
+
+
+// Activar el servidor 
+const httpServer = app.listen(port, appListen)
+async function appListen () {
+  await shadows.init('./public/index.html', './public/shadows')
+  console.log(`Example app listening on: http://localhost:${port}`)
 }
 
+// Close connections when process is killed
 process.on('SIGTERM', shutDown);
 process.on('SIGINT', shutDown);
-
 function shutDown() {
   console.log('Received kill signal, shutting down gracefully');
-  httpServer.close();
-  db.end();
-  db2.end();
+  httpServer.close()
+  db.end()
   process.exit(0);
 }
 
-app.get('/index-dev.html', getIndexDev);
-
-async function getIndexDev(req, res) {
+// Configurar la direcció '/index-dev.html' per retornar
+// la pàgina que descarrega tots els shadows (desenvolupament)
+app.get('/index-dev.html', getIndexDev)
+async function getIndexDev (req, res) {
   res.setHeader('Content-Type', 'text/html');
-  res.send(shadows.getIndexDev());
+  res.send(shadows.getIndexDev())
 }
 
-app.get('/shadows.js', getShadows);
-
-async function getShadows(req, res) {
+// Configurar la direcció '/shadows.js' per retornar
+// tot el codi de les shadows en un sol arxiu
+app.get('/shadows.js', getShadows)
+async function getShadows (req, res) {
   res.setHeader('Content-Type', 'application/javascript');
-  res.send(shadows.getShadows());
+  res.send(shadows.getShadows())
 }
-
-
-// CREACION FILAS ******************************************************************************
-app.post('/createCar', actionCreateCar);
 
 // Configurar la direcció '/ajaxCall'
 app.post('/ajaxCall', ajaxCall)
@@ -83,24 +110,14 @@ async function ajaxCall (req, res) {
       case 'actionLogout':            result = await actionLogout(objPost); break
       case 'actionLogin':             result = await actionLogin(objPost); break
       case 'actionSignUp':            result = await actionSignUp(objPost); break
-      case 'createCar': // Agregar el nuevo caso para la creación de un carro
-      result = await actionCreateCar(objPost);
-      break;
-
-      
+      case 'actionCreateCar':         result = await actionCreateCar(objPost); break;  
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
   }
-  let coches = await db2.query('select * from coche');
-  // result = { result: 'OK', coches: coches };
-  console.log(coches);
-  // Retornar el resultat
+
   res.send(result)
 }
-
-
-// ****************************************************************************
 
 async function actionCheckUserByToken (objPost) {
   let tokenValue = objPost.token
@@ -184,21 +201,30 @@ async function actionSignUp(objPost) {
     return { result: 'Error', error: error.message };
   }
 }
+async function actionCreateCar(objPost) {
+  let marca = objPost.marca;
+  let modelo = objPost.modelo;
+  let color = objPost.color;
+  let any = parseInt(objPost.any, 10);
+  let precio = parseInt(objPost.precio, 10);
+  const ejemploUsuario = {
+    marca: marca,
+    modelo: modelo,
+    any: any,
+    color: color,
+    precio: precio
+  };
 
+  const sqlQuery2 = `INSERT INTO coche (marca, modelo, any, color, precio) VALUES ('${ejemploUsuario.marca}', '${ejemploUsuario.modelo}', '${ejemploUsuario.any}', '${ejemploUsuario.color}', '${ejemploUsuario.precio}')`;
+  try {
+    // Realizar la consulta a la base de datos y esperar la respuesta
+    const queryResult2 = await db2.query(sqlQuery2);
+    console.log('Query Result:', queryResult2); 
 
-  async function actionCreateCar(req, res) {
-    try {
-      const carData = req.body; // Recibiendo los datos del nuevo coche desde la solicitud POST
-
-      const insertQuery = `INSERT INTO coche (marca, modelo, any, color, precio) VALUES (?, ?, ?, ?, ?)`;
-      const insertValues = [carData.marca, carData.modelo, carData.any, carData.color, carData.precio];
-
-      const queryResult = await db2.query(insertQuery, insertValues);
-      console.log('Nuevo coche insertado:', queryResult);
-
-      return res.send({ result: 'OK', message: 'Coche creado exitosamente' });
-    } catch (error) {
-      console.error('Error creando coche:', error);
-      return res.status(500).send({ result: 'KO', message: 'Error al crear el coche' });
-    }
+    return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
+  } catch (error) {
+    // Manejar errores, por ejemplo:
+    console.error("Error al ejecutar la consulta:", error);
+    return { result: 'Error', error: error.message };
   }
+}
