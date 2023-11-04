@@ -34,7 +34,7 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
         ////
         // Agregar el event listener para el botón de "Create"
-        this.shadow.querySelector('#Create').addEventListener('click', this.actionCreate.bind(this));
+        this.shadow.querySelector('#Create').addEventListener('click', this.showCreateCarView.bind(this));
        
     
         this.shadow.querySelectorAll('.modButton').forEach(button => {
@@ -50,17 +50,32 @@ class UserLogin extends HTMLElement {
 
    // CREACION FILAS *******************************************************************************
 
-    showCreateCarView() {
-        this.showView('CreateMod', 'initial'); // Muestra el formulario para crear coches
-        this.showView('ModifyMod', 'none'); // Por ejemplo, oculta otras vistas de modificación
-        // ...
+   showCreateCarView() {
+    const createView = this.shadow.querySelector('#CreateMod');
+    createView.style.display = 'block'; // Mostrar la vista de creación de coches
+    // También puedes ocultar otras vistas de modificación si es necesario
     }
 
-    async actionCreate(carData) {
-        this.showView('CreateMod', 'initial'); // Muestra la vista de creación de coches
-        this.showView('ModifyMod', 'none'); // Oculta otras vistas de modificación
+    async actionCreate() {
+        this.showCreateCarView(); // Mostrar la vista para crear coches
     
         try {
+            // Obtener los valores del formulario
+            const marca = this.shadow.querySelector('#marcaInput').value;
+            const modelo = this.shadow.querySelector('#modeloInput').value;
+            const año = this.shadow.querySelector('#añoInput').value;
+            const color = this.shadow.querySelector('#colorInput').value;
+            const precio = this.shadow.querySelector('#precioInput').value;
+    
+            // Crear un objeto con los datos del coche
+            const carData = {
+                marca: marca,
+                modelo: modelo,
+                año: año,
+                color: color,
+                precio: precio
+            };
+    
             let requestData = {
                 callType: 'createCar',
                 carData: carData // Datos necesarios para crear un coche
@@ -68,10 +83,12 @@ class UserLogin extends HTMLElement {
     
             let resultData = await this.callServer(requestData);
             if (resultData.result === 'OK') {
-                // Si la creación tiene éxito, puedes realizar acciones adicionales
-                // Por ejemplo, mostrar un mensaje de éxito, actualizar la interfaz, etc.
+                // Si la creación tiene éxito, redirigir a la misma página
+                window.location.href = window.location.href; // Redirigir a la misma página
+                console.log('Coche creado exitosamente');
             } else {
                 // Si hay un error en la creación, manejarlo apropiadamente
+                console.error('Error al crear el coche:', resultData.message);
                 // Por ejemplo, mostrar un mensaje de error, revertir cambios, etc.
             }
         } catch (error) {
@@ -80,7 +97,7 @@ class UserLogin extends HTMLElement {
         }
     }
     
-    // **********************************************************************************************************
+    
     
 
     checkSignUpPasswords () {
