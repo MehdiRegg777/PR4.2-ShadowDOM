@@ -65,7 +65,13 @@ class UserLogin extends HTMLElement {
             color: colorInput.value,
             precio: precioInput.value,
         }
-        await this.callServer(requestData)
+        let resultData = await this.callServer(requestData)
+        if (resultData.result == 'Coches') {
+            this.setUserInfo(resultData.marca, resultData.modelo, resultData.any, resultData.color, resultData.precio)
+            this.showView('viewInfo')
+        } else {
+            console.log("Fallo");
+        }      
         
     }
 

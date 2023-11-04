@@ -123,7 +123,6 @@ async function actionCheckUserByToken (objPost) {
   let tokenValue = objPost.token
   // Si troba el token a les dades, retorna el nom d'usuari
   let users = await db.query('select * from users');
-    console.log(users);
   let user = users.find(u => u.token == tokenValue)
   if (!user) {
       return {result: 'KO'}
