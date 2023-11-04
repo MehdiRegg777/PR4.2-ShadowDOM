@@ -110,6 +110,11 @@ async function ajaxCall (req, res) {
       case 'actionLogout':            result = await actionLogout(objPost); break
       case 'actionLogin':             result = await actionLogin(objPost); break
       case 'actionSignUp':            result = await actionSignUp(objPost); break
+      case 'createCar': // Agregar el nuevo caso para la creación de un carro
+      result = await actionCreateCar(objPost);
+      break;
+
+      
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;

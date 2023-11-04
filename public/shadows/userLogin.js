@@ -33,6 +33,9 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpBtn').addEventListener('click', this.actionSignUp.bind(this))
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
         ////
+        // Agregar el event listener para el botón de "Create"
+        this.shadow.querySelector('#Create').addEventListener('click', this.actionCreate.bind(this));
+       
     
         this.shadow.querySelectorAll('.modButton').forEach(button => {
             button.addEventListener('click', this.handleModButtonClick.bind(this));
@@ -44,6 +47,35 @@ class UserLogin extends HTMLElement {
         // Automàticament, validar l'usuari per 'token' (si n'hi ha)
         await this.actionCheckUserByToken()
     } 
+
+
+
+    showCreateCarView() {
+        this.showView('CreateMod', 'initial'); // Muestra el formulario para crear coches
+        this.showView('ModifyMod', 'none'); // Por ejemplo, oculta otras vistas de modificación
+        // ...
+    }
+
+    async actionCreate() {
+        // Muestra la vista correspondiente al botón "Create" (si es relevante)
+        this.showView('CreateMod', 'initial'); // Muestra la vista de creación de carro
+        this.showView('ModifyMod', 'none'); // Por ejemplo, oculta otras vistas de modificación
+
+        // Lógica para la creación de un carro
+        let requestData = {
+            callType: 'createCar',
+            // Datos necesarios para crear un carro, si es el caso
+        };
+
+        let resultData = await this.callServer(requestData);
+        if (resultData.result === 'OK') {
+            // Si la creación tiene éxito, puedes realizar acciones adicionales
+            // Por ejemplo, mostrar un mensaje de éxito, actualizar la interfaz, etc.
+        } else {
+            // Si hay un error en la creación, manejarlo apropiadamente
+            // Por ejemplo, mostrar un mensaje de error, revertir cambios, etc.
+        }
+    }
 
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
