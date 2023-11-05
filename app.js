@@ -170,7 +170,6 @@ async function actionLogin(objPost) {
   }
 }
 
-
 async function actionSignUp(objPost) {
   let userName = objPost.userName;
   let userPassword = objPost.userPassword;
@@ -201,6 +200,8 @@ async function actionSignUp(objPost) {
     return { result: 'Error', error: error.message };
   }
 }
+
+
 async function actionCreateCar(objPost) {
   let marca = objPost.marca;
   let modelo = objPost.modelo;
@@ -226,5 +227,27 @@ async function actionCreateCar(objPost) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);
     return { result: 'Error', error: error.message };
+  }
+}
+
+// ****************** FUCNION ELIMINAR FILA DE LA TABLA ******************************
+async function actionDeleteCar(objPost) {
+  let carIdToDelete = objPost.carId;
+
+  try {
+      // Realizar la lógica para eliminar el automóvil en la base de datos
+      // Ejemplo usando una consulta DELETE:
+      const deleteQuery = `DELETE FROM coche WHERE id = ${carIdToDelete}`;
+      const queryResult = await db2.query(deleteQuery);
+
+      // Comprueba el resultado y devuelve 'OK' si la eliminación fue exitosa
+      if (queryResult.affectedRows > 0) {
+          return { result: 'OK' };
+      } else {
+          return { result: 'KO', message: 'Car not found or could not be deleted' };
+      }
+  } catch (error) {
+      console.error("Error deleting car:", error);
+      return { result: 'Error', error: error.message };
   }
 }
