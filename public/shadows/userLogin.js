@@ -41,6 +41,21 @@ class UserLogin extends HTMLElement {
             button.addEventListener('click', this.actionCreate.bind(this));
         });
 
+        // Agregar el event listener para el botón de "delete"
+        this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
+            button.addEventListener('click', this.actionDeleteCar.bind(this));
+        });
+
+        // Agregar el event listener par el boton de "modify"
+        this.shadow.querySelectorAll('.modButton').forEach(button => {
+            button.addEventListener('click', this.handleModButtonClick.bind(this));
+        });
+        
+        // Agregar el event listener para el botón de "Modify"
+        this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
+            button.addEventListener('click', this.actionModifyCar.bind(this));
+        });
+        
     
 
 
@@ -96,8 +111,37 @@ class UserLogin extends HTMLElement {
     }
 
     // *******************************************************************************************
-
-
+    
+    async actionModifyCar() {
+        let carIdToModify = this.shadow.querySelector('#carIdToModify').value;
+    
+        // Mostrar la vista
+        this.showView('ModifyMod', 'loading');
+    
+        let requestData = {
+            callType: 'actionGetCarInfo',
+            carId: carIdToModify,
+        };
+    
+        let resultData = await this.callServer(requestData);
+        if (resultData.result === 'OK') {
+            const carInfoDiv = this.shadow.querySelector('#carInfoToModify');
+            const carDetails = resultData.carDetails;
+    
+            // Mostrar la información del coche en el div 'carInfoToModify'
+            carInfoDiv.innerHTML = `
+                <p>Marca: ${carDetails.marca}</p>
+                <p>Modelo: ${carDetails.modelo}</p>
+                <p>Año: ${carDetails.any}</p>
+                <p>Color: ${carDetails.color}</p>
+                <p>Precio: ${carDetails.precio}</p>
+            `;
+        } else {
+            console.error('Error getting car information for modification');
+        }
+    }
+    
+    
     
   
 

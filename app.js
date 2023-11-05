@@ -112,7 +112,7 @@ async function ajaxCall (req, res) {
       case 'actionSignUp':            result = await actionSignUp(objPost); break
       case 'actionCreateCar':         result = await actionCreateCar(objPost); break;  
       case 'actionDeleteCar':           result = await actionDeleteCar(objPost);break;
-
+      case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
 
       default:
           result = {result: 'KO', message: 'Invalid callType'}
@@ -235,6 +235,8 @@ async function actionCreateCar(objPost) {
   }
 }
 
+//**************************************************************************************************************************** */
+
 // ****************** FUCNION ELIMINAR FILA DE LA TABLA ******************************
 async function actionDeleteCar(objPost) {
   let carIdToDelete = objPost.carId;
@@ -258,3 +260,22 @@ async function actionDeleteCar(objPost) {
 }
 
 
+// *************************** MODIFY **********************************************************
+
+async function actionGetCarInfo(objPost) {
+  let carId = objPost.carId;
+
+  try {
+      const query = `SELECT * FROM coche WHERE id = ${carId}`;
+      const carInfo = await db2.query(query);
+
+      if (carInfo.length > 0) {
+          return { result: 'OK', carDetails: carInfo[0] };
+      } else {
+          return { result: 'KO', message: 'Car details not found' };
+      }
+  } catch (error) {
+      console.error("Error getting car information:", error);
+      return { result: 'Error', error: error.message };
+  }
+}

@@ -34,8 +34,16 @@
         </div>
         <div class="modView" id="ModifyMod" style="display: none;">
             <h6 class="title2">Modify a car</h6>
-            <!-- Contenido de Modify -->
+            <form id="modifyCarForm">
+                <label for="carIdToModify">ID del Coche a Modificar:</label>
+                <input type="text" id="carIdToModify">
+                <button class="modifyCarButton" id="modifyCarButton">Modificar Coche</button>
+            </form>
+            <div id="carInfoToModify">
+                <!-- Aquí se mostrará la información del coche seleccionado para modificar -->
+            </div>
         </div>
+        
         <div class="modView" id="DeleteMod" style="display: none;">
             <h6 class="title2">Delete a car</h6>
             <!-- Contenido de Delete -->
