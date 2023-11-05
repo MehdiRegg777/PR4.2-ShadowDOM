@@ -51,7 +51,7 @@ class UserLogin extends HTMLElement {
         await this.actionCheckUserByToken()
     } 
 
-      // CREACION FILAS *************************
+      // *******************CREACION FILAS *************************
       async actionCreate() {
         let marcaInput = this.shadow.querySelector('#marcaInput')
         let modeloInput = this.shadow.querySelector('#modeloInput')
@@ -78,6 +78,31 @@ class UserLogin extends HTMLElement {
         }      
         
     }
+     // ****************** ELIMINAR FILAS ******************************
+     async actionDeleteCar() {
+        let carIdToDelete = this.shadow.querySelector('#carIdToDelete').value;
+
+        // Mostrar la vista
+        this.showView('viewSignUpForm', 'loading');
+
+        let requestData = {
+            callType: 'actionDeleteCar',
+            carId: carIdToDelete,
+        };
+
+        let resultData = await this.callServer(requestData);
+        if (resultData.result == 'OK') {
+            // Si la eliminación es exitosa, realizar acciones correspondientes
+            // Mostrar mensajes, actualizar la interfaz, etc.
+            console.log('Car deleted successfully');
+        } else {
+            // Si hay un error al eliminar, manejarlo aquí
+            // Mostrar mensajes de error, etc.
+            console.error('Error deleting car');
+        }
+    }
+
+// *******************************************************************************************
 
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
