@@ -101,6 +101,34 @@ class UserLogin extends HTMLElement {
             console.error('Error deleting car');
         }
     }
+    // ****************** Modo de vistas para el create, edit y delete  ******************************
+    handleModButtonClick(event) {
+        const viewType = event.currentTarget.getAttribute('data-view-type');
+    
+        // Ocultar todas las vistas de modificación
+        this.shadow.querySelectorAll('.modView').forEach(view => {
+            view.style.display = 'none';
+        });
+    
+        // Mostrar la vista correspondiente
+        const viewToShow = this.shadow.querySelector(`#${viewType}Mod`);
+        if (viewToShow) {
+            viewToShow.style.removeProperty('display');
+        }
+    
+        // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
+        // switch (viewType) {
+        //     case 'Create':
+        //         // Acciones específicas para Create
+        //         break;
+        //     case 'Modify':
+        //         // Acciones específicas para Modify
+        //         break;
+        //     case 'Delete':
+        //         // Acciones específicas para Delete
+        //         break;
+        // }
+    }
 
 // *******************************************************************************************
 
@@ -262,34 +290,6 @@ class UserLogin extends HTMLElement {
             this.setUserInfo('', '')
             this.showView('viewLoginForm', 'initial')
         }
-    }
-
-    handleModButtonClick(event) {
-        const viewType = event.currentTarget.getAttribute('data-view-type');
-    
-        // Ocultar todas las vistas de modificación
-        this.shadow.querySelectorAll('.modView').forEach(view => {
-            view.style.display = 'none';
-        });
-    
-        // Mostrar la vista correspondiente
-        const viewToShow = this.shadow.querySelector(`#${viewType}Mod`);
-        if (viewToShow) {
-            viewToShow.style.removeProperty('display');
-        }
-    
-        // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
-        // switch (viewType) {
-        //     case 'Create':
-        //         // Acciones específicas para Create
-        //         break;
-        //     case 'Modify':
-        //         // Acciones específicas para Modify
-        //         break;
-        //     case 'Delete':
-        //         // Acciones específicas para Delete
-        //         break;
-        // }
     }
 
         async actionLogout() {
