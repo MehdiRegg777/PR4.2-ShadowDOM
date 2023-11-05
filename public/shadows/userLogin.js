@@ -40,15 +40,16 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelectorAll('.createCarButton').forEach(button => {
             button.addEventListener('click', this.actionCreate.bind(this));
         });
-        // ...
+
+    
 
 
         // Automàticament, validar l'usuari per 'token' (si n'hi ha)
         await this.actionCheckUserByToken()
     } 
 
-      // CREACION FILAS *************************
-      async actionCreate() {
+    // ************** CREACION FILAS *************************
+    async actionCreate() {
         let marcaInput = this.shadow.querySelector('#marcaInput')
         let modeloInput = this.shadow.querySelector('#modeloInput')
         let añoInput = this.shadow.querySelector('#añoInput')
@@ -68,6 +69,37 @@ class UserLogin extends HTMLElement {
         await this.callServer(requestData)
         
     }
+
+    // ... (otro código)
+    // ****************** ELIMINAR FILAS ******************************
+    async actionDeleteCar() {
+            let carIdToDelete = this.shadow.querySelector('#carIdToDelete').value;
+
+            // Mostrar la vista
+            this.showView('viewSignUpForm', 'loading');
+
+            let requestData = {
+                callType: 'actionDeleteCar',
+                carId: carIdToDelete,
+            };
+
+            let resultData = await this.callServer(requestData);
+            if (resultData.result == 'OK') {
+                // Si la eliminación es exitosa, realizar acciones correspondientes
+                // Mostrar mensajes, actualizar la interfaz, etc.
+                console.log('Car deleted successfully');
+            } else {
+                // Si hay un error al eliminar, manejarlo aquí
+                // Mostrar mensajes de error, etc.
+                console.error('Error deleting car');
+            }
+    }
+
+    // *******************************************************************************************
+
+
+    
+  
 
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
@@ -257,23 +289,23 @@ class UserLogin extends HTMLElement {
         // }
     }
 
-        async actionLogout() {
-        // Mostrar la vista amb status 'loading'
-        this.showView('viewInfo', 'loading')
+    async actionLogout() {
+    // Mostrar la vista amb status 'loading'
+    this.showView('viewInfo', 'loading')
 
-        // Identificar usuari si hi ha "token" al "LocalStorage"
-        let tokenValue = window.localStorage.getItem("token")
-        if (tokenValue) {
-            let requestData = {
-                callType: 'actionLogout',
-                token: tokenValue
-            }
-            await this.callServer(requestData)
-        } 
+    // Identificar usuari si hi ha "token" al "LocalStorage"
+    let tokenValue = window.localStorage.getItem("token")
+    if (tokenValue) {
+        let requestData = {
+            callType: 'actionLogout',
+            token: tokenValue
+        }
+        await this.callServer(requestData)
+    } 
 
-        // Tan fa la resposta, esborrem les dades
-        this.setUserInfo('', '')
-        this.showView('viewLoginForm', 'initial')
+    // Tan fa la resposta, esborrem les dades
+    this.setUserInfo('', '')
+    this.showView('viewLoginForm', 'initial')
     }
 
     async actionLogin() {

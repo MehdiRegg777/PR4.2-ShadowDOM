@@ -111,6 +111,9 @@ async function ajaxCall (req, res) {
       case 'actionLogin':             result = await actionLogin(objPost); break
       case 'actionSignUp':            result = await actionSignUp(objPost); break
       case 'actionCreateCar':         result = await actionCreateCar(objPost); break;  
+      case 'actionDeleteCar':           result = await actionDeleteCar(objPost);break;
+
+
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -201,6 +204,9 @@ async function actionSignUp(objPost) {
     return { result: 'Error', error: error.message };
   }
 }
+
+// ******************* FUNCION INSERTAR COCHES EN LA TABLA *****************************
+
 async function actionCreateCar(objPost) {
   let marca = objPost.marca;
   let modelo = objPost.modelo;
@@ -228,3 +234,27 @@ async function actionCreateCar(objPost) {
     return { result: 'Error', error: error.message };
   }
 }
+
+// ****************** FUCNION ELIMINAR FILA DE LA TABLA ******************************
+async function actionDeleteCar(objPost) {
+  let carIdToDelete = objPost.carId;
+
+  try {
+      // Realizar la lógica para eliminar el automóvil en la base de datos
+      // Ejemplo usando una consulta DELETE:
+      const deleteQuery = `DELETE FROM coche WHERE id = ${carIdToDelete}`;
+      const queryResult = await db2.query(deleteQuery);
+
+      // Comprueba el resultado y devuelve 'OK' si la eliminación fue exitosa
+      if (queryResult.affectedRows > 0) {
+          return { result: 'OK' };
+      } else {
+          return { result: 'KO', message: 'Car not found or could not be deleted' };
+      }
+  } catch (error) {
+      console.error("Error deleting car:", error);
+      return { result: 'Error', error: error.message };
+  }
+}
+
+
