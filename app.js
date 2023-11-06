@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid')
 const database = require('./utilsMySQL.js')
 const shadowsObj = require('./utilsShadows.js')
 const app = express()
-const port = 3001
+const port = 3010
 
 // Crear i configurar l'objecte de la base de dades
 var db = new database()
