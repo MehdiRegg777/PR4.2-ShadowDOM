@@ -7,6 +7,17 @@ const shadowsObj = require('./utilsShadows.js')
 const app = express()
 const port = 3001
 
+// Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
+// let hash0 = crypto.createHash('md5').update("1234").digest("hex")
+// let hash1 = crypto.createHash('md5').update("abcd").digest("hex")
+// let users = [
+//   {userName: 'user0', password: hash0, token: ''},
+//   {userName: 'user1', password: hash1, token: ''}
+// ]
+
+// Inicialitzar objecte de shadows
+let shadows = new shadowsObj()
+
 // Crear i configurar l'objecte de la base de dades
 var db = new database()
 db.init({
@@ -27,46 +38,18 @@ db2.init({
   database: "coches"
 })
 
-// Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
-// let hash0 = crypto.createHash('md5').update("1234").digest("hex")
-// let hash1 = crypto.createHash('md5').update("abcd").digest("hex")
-// let users = [
-//   {userName: 'user0', password: hash0, token: ''},
-//   {userName: 'user1', password: hash1, token: ''}
-// ]
-
-
-
-// Inicialitzar objecte de shadows
-let shadows = new shadowsObj()
-
 // Publicar arxius carpeta ‘public’ 
 app.use(express.static('public'))
 
 // Configurar per rebre dades POST en format JSON
 app.use(express.json());
 
-
-// Configurar dirección '/testDB'
-// app.get('/testDB', testDB);
-
-// async function testDB(req, res) {
-//   try {
-//     let rst = await db.query('select * from users');
-//     res.send(rst);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Error al acceder a la base de datos');
-//   }
-// }
-
-
-
 // Activar el servidor 
 const httpServer = app.listen(port, appListen)
 async function appListen () {
   await shadows.init('./public/index.html', './public/shadows')
   console.log(`Example app listening on: http://localhost:${port}`)
+  console.log(`Development queries on: http://localhost:${port}/index-dev.html`)
 }
 
 // Close connections when process is killed
@@ -117,6 +100,7 @@ async function ajaxCall (req, res) {
           break;
   }
 
+  // Retornar el resultat
   res.send(result)
 }
 
@@ -124,6 +108,7 @@ async function actionCheckUserByToken (objPost) {
   let tokenValue = objPost.token
   // Si troba el token a les dades, retorna el nom d'usuari
   let users = await db.query('select * from users');
+  console.log(users, tokenValue)
   let user = users.find(u => u.token == tokenValue)
   if (!user) {
       return {result: 'KO'}
@@ -134,9 +119,8 @@ async function actionCheckUserByToken (objPost) {
 
 async function actionLogout (objPost) {
   let tokenValue = objPost.token
-  // Si troba el token a les dades, retorna el nom d'usuari
   let users = await db.query('select * from users');
-    console.log(users);
+  // Si troba el token a les dades, retorna el nom d'usuari
   let user = users.find(u => u.token == tokenValue)
   if (!user) {
       return {result: 'OK'}
@@ -145,6 +129,7 @@ async function actionLogout (objPost) {
   }
 }
 
+
 async function actionLogin(objPost) {
   let userName = objPost.userName;
   let userPassword = objPost.userPassword;
@@ -152,7 +137,7 @@ async function actionLogin(objPost) {
 
   try {
     let users = await db.query('select * from users');
-    console.log(users);
+    //console.log(users);
 
     // Buscar el usuario en los datos
     let user = users.find(u => u.userName == userName && u.password == hash);
@@ -161,7 +146,15 @@ async function actionLogin(objPost) {
       return { result: 'KO' };
     } else {
       let token = uuidv4();
-      user.token = token;
+      //user.token = token;
+      ////
+      const edittoken = {
+        userName: userName,
+        tokenn: token
+      };
+      const sqlQuery = `UPDATE users SET token = '${edittoken.tokenn}' WHERE userName = '${edittoken.userName}'`;
+      const queryResult = await db.query(sqlQuery);
+      console.log('Query Result:', queryResult);
       return { result: 'OK', userName: user.userName, token: token };
     }
   } catch (error) {

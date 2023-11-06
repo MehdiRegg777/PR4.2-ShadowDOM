@@ -32,103 +32,104 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpPasswordCheck').addEventListener('input', this.checkSignUpPasswords.bind(this))
         this.shadow.querySelector('#signUpBtn').addEventListener('click', this.actionSignUp.bind(this))
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
-        ////
-        this.shadow.querySelectorAll('.modButton').forEach(button => {
-            button.addEventListener('click', this.handleModButtonClick.bind(this));
-        });
-        // Agregar el event listener para el botón de "Create"
-        this.shadow.querySelectorAll('.createCarButton').forEach(button => {
-            button.addEventListener('click', this.actionCreate.bind(this));
-        });
-        // Agregar el event listener para el botón de "delete"
-        this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
-            button.addEventListener('click', this.actionDeleteCar.bind(this));
-        });
-        // ...
+
+      ////
+      this.shadow.querySelectorAll('.modButton').forEach(button => {
+        button.addEventListener('click', this.handleModButtonClick.bind(this));
+    });
+    // Agregar el event listener para el botón de "Create"
+    this.shadow.querySelectorAll('.createCarButton').forEach(button => {
+        button.addEventListener('click', this.actionCreate.bind(this));
+    });
+    // Agregar el event listener para el botón de "delete"
+    this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
+        button.addEventListener('click', this.actionDeleteCar.bind(this));
+    });
+    // ...
 
 
-        // Automàticament, validar l'usuari per 'token' (si n'hi ha)
-        await this.actionCheckUserByToken()
-    } 
+    // Automàticament, validar l'usuari per 'token' (si n'hi ha)
+    await this.actionCheckUserByToken()
+} 
 
-      // *******************CREACION FILAS *************************
-      async actionCreate() {
-        let marcaInput = this.shadow.querySelector('#marcaInput')
-        let modeloInput = this.shadow.querySelector('#modeloInput')
-        let añoInput = this.shadow.querySelector('#añoInput')
-        let colorInput = this.shadow.querySelector('#colorInput')
-        let precioInput = this.shadow.querySelector('#precioInput')
-        // Mostrar la vista
-        this.showView('viewSignUpForm', 'loading')
+  // *******************CREACION FILAS *************************
+  async actionCreate() {
+    let marcaInput = this.shadow.querySelector('#marcaInput')
+    let modeloInput = this.shadow.querySelector('#modeloInput')
+    let añoInput = this.shadow.querySelector('#añoInput')
+    let colorInput = this.shadow.querySelector('#colorInput')
+    let precioInput = this.shadow.querySelector('#precioInput')
+    // Mostrar la vista
+    this.showView('viewSignUpForm', 'loading')
 
-        let requestData = {
-            callType: 'actionCreateCar',
-            marca: marcaInput.value,
-            modelo: modeloInput.value,
-            any: añoInput.value,
-            color: colorInput.value,
-            precio: precioInput.value,
-        }
-        let resultData = await this.callServer(requestData)
-        if (resultData.result == 'Coches') {
-            this.setUserInfo(resultData.marca, resultData.modelo, resultData.any, resultData.color, resultData.precio)
-            this.showView('viewInfo')
-        } else {
-            console.log("Fallo");
-        }      
-        
+    let requestData = {
+        callType: 'actionCreateCar',
+        marca: marcaInput.value,
+        modelo: modeloInput.value,
+        any: añoInput.value,
+        color: colorInput.value,
+        precio: precioInput.value,
     }
-     // ****************** ELIMINAR FILAS ******************************
-     async actionDeleteCar() {
-        let carIdToDelete = this.shadow.querySelector('#carIdToDelete').value;
+    let resultData = await this.callServer(requestData)
+    if (resultData.result == 'Coches') {
+        this.setUserInfo(resultData.marca, resultData.modelo, resultData.any, resultData.color, resultData.precio)
+        this.showView('viewInfo')
+    } else {
+        console.log("Fallo");
+    }      
+    
+}
+ // ****************** ELIMINAR FILAS ******************************
+ async actionDeleteCar() {
+    let carIdToDelete = this.shadow.querySelector('#carIdToDelete').value;
 
-        // Mostrar la vista
-        this.showView('viewSignUpForm', 'loading');
+    // Mostrar la vista
+    this.showView('viewSignUpForm', 'loading');
 
-        let requestData = {
-            callType: 'actionDeleteCar',
-            carId: carIdToDelete,
-        };
+    let requestData = {
+        callType: 'actionDeleteCar',
+        carId: carIdToDelete,
+    };
 
-        let resultData = await this.callServer(requestData);
-        if (resultData.result == 'OK') {
-            // Si la eliminación es exitosa, realizar acciones correspondientes
-            // Mostrar mensajes, actualizar la interfaz, etc.
-            console.log('Car deleted successfully');
-        } else {
-            // Si hay un error al eliminar, manejarlo aquí
-            // Mostrar mensajes de error, etc.
-            console.error('Error deleting car');
-        }
+    let resultData = await this.callServer(requestData);
+    if (resultData.result == 'OK') {
+        // Si la eliminación es exitosa, realizar acciones correspondientes
+        // Mostrar mensajes, actualizar la interfaz, etc.
+        console.log('Car deleted successfully');
+    } else {
+        // Si hay un error al eliminar, manejarlo aquí
+        // Mostrar mensajes de error, etc.
+        console.error('Error deleting car');
     }
-    // ****************** Modo de vistas para el create, edit y delete  ******************************
-    handleModButtonClick(event) {
-        const viewType = event.currentTarget.getAttribute('data-view-type');
-    
-        // Ocultar todas las vistas de modificación
-        this.shadow.querySelectorAll('.modView').forEach(view => {
-            view.style.display = 'none';
-        });
-    
-        // Mostrar la vista correspondiente
-        const viewToShow = this.shadow.querySelector(`#${viewType}Mod`);
-        if (viewToShow) {
-            viewToShow.style.removeProperty('display');
-        }
-    
-        // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
-        // switch (viewType) {
-        //     case 'Create':
-        //         // Acciones específicas para Create
-        //         break;
-        //     case 'Modify':
-        //         // Acciones específicas para Modify
-        //         break;
-        //     case 'Delete':
-        //         // Acciones específicas para Delete
-        //         break;
-        // }
+}
+// ****************** Modo de vistas para el create, edit y delete  ******************************
+handleModButtonClick(event) {
+    const viewType = event.currentTarget.getAttribute('data-view-type');
+
+    // Ocultar todas las vistas de modificación
+    this.shadow.querySelectorAll('.modView').forEach(view => {
+        view.style.display = 'none';
+    });
+
+    // Mostrar la vista correspondiente
+    const viewToShow = this.shadow.querySelector(`#${viewType}Mod`);
+    if (viewToShow) {
+        viewToShow.style.removeProperty('display');
     }
+
+    // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
+    // switch (viewType) {
+    //     case 'Create':
+    //         // Acciones específicas para Create
+    //         break;
+    //     case 'Modify':
+    //         // Acciones específicas para Modify
+    //         break;
+    //     case 'Delete':
+    //         // Acciones específicas para Delete
+    //         break;
+    // }
+}
 
 // *******************************************************************************************
 
@@ -169,7 +170,7 @@ class UserLogin extends HTMLElement {
             refButton.disabled = true
             break
         case 'logged':
-            refUserName.innerText = "Usuario: "+ window.localStorage.getItem("userName")
+            refUserName.innerText = window.localStorage.getItem("userName")
             refLoading.style.opacity = 0
             refButton.disabled = false
             break
@@ -292,7 +293,7 @@ class UserLogin extends HTMLElement {
         }
     }
 
-        async actionLogout() {
+    async actionLogout() {
         // Mostrar la vista amb status 'loading'
         this.showView('viewInfo', 'loading')
 
@@ -389,8 +390,6 @@ class UserLogin extends HTMLElement {
         }
         return resultData
     }
-
-    
 }
 
 // Defineix l'element personalitzat

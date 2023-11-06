@@ -1,6 +1,6 @@
 window.addEventListener('load', init)
 async function init () {
-    console.log('init')
+
 }
 
 async function actionCheckUserByToken(tokenValue) {
