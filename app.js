@@ -83,6 +83,9 @@ app.post('/ajaxCall', ajaxCall)
 async function ajaxCall (req, res) {
   let objPost = req.body;
   let result = ""
+    
+
+
 
   // Simulate delay (1 second)
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -95,6 +98,7 @@ async function ajaxCall (req, res) {
       case 'actionSignUp':            result = await actionSignUp(objPost); break
       case 'actionCreateCar':         result = await actionCreateCar(objPost); break;  
       case 'actionDeleteCar':           result = await actionDeleteCar(objPost);break;
+      case 'mostrarTabla':           result = await actionTabla(objPost);break;
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -102,7 +106,10 @@ async function ajaxCall (req, res) {
 
   // Retornar el resultat
   res.send(result)
+
 }
+
+
 
 async function actionCheckUserByToken (objPost) {
   let tokenValue = objPost.token
@@ -242,5 +249,24 @@ async function actionDeleteCar(objPost) {
   } catch (error) {
       console.error("Error deleting car:", error);
       return { result: 'Error', error: error.message };
+  }
+}
+
+// ****************** Mostrar las FILAS DE LAS TABLAS ******************************
+async function actionTabla() {
+  try {
+    // Realizar la lógica para obtener los datos de la base de datos
+    // Ejemplo usando una consulta SELECT:
+    const mostrarTabla = `select * from coche`;
+    const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
+    console.log(queryResult);
+    if (queryResult.length > 0) {
+      return { result: 'OK', data: queryResult };
+    } else {
+      return { result: 'KO', message: 'No se encontraron coches' };
+    }
+  } catch (error) {
+    console.error("Error al obtener datos de coches:", error);
+    return { result: 'Error', error: error.message };
   }
 }

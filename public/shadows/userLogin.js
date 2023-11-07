@@ -45,6 +45,10 @@ class UserLogin extends HTMLElement {
     this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
         button.addEventListener('click', this.actionDeleteCar.bind(this));
     });
+    ///
+    this.shadow.querySelectorAll('.table').forEach(button => {
+        button.addEventListener('click', this.displayCoches.bind(this));
+    });
     // ...
 
 
@@ -130,6 +134,43 @@ handleModButtonClick(event) {
     //         break;
     // }
 }
+
+ // ****************** MOSTRAR TABLA ******************************
+ async displayCoches() {
+    let data = {
+        callType: 'mostrarTabla'
+    };
+    console.log(data);
+    try {
+      const tbody = document.querySelector("#cochesTable tbody"); // Asegúrate de seleccionar correctamente el tbody
+    
+      if (data.result === 'OK') {
+        // Borra filas existentes
+        tbody.innerHTML = '';
+    
+        // Llena la tabla con los datos
+        data.data.forEach(coche => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${coche.Id}</td>
+            <td>${coche.Marca}</td>
+            <td>${coche.Any}</td>
+            <td>${coche.Color}</td>
+            <td>${coche.Precio}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        // Muestra un mensaje de error si no se encontraron coches
+        tbody.innerHTML = `<tr><td colspan="5">${data.message}</td></tr>`;
+      }
+    } catch (error) {
+      console.error("Error al mostrar coches:", error);
+      // Muestra un mensaje de error en caso de un error en la solicitud
+      tbody.innerHTML = `<tr><td colspan="5">Error al obtener los datos de los coches</td></tr>`;
+    }
+    
+  }
 
 // *******************************************************************************************
 
