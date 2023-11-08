@@ -116,6 +116,39 @@ class UserLogin extends HTMLElement {
         console.error('Error deleting car');
     }
 }
+
+    // **************************************MODIFY**********************************************
+    
+    async actionModifyCar() {
+        let carIdToModify = this.shadow.querySelector('#carIdToModify').value;
+
+        let opcionesSelect = this.shadow.querySelector('#opciones');
+        let opcionSeleccionada = opcionesSelect.options[opcionesSelect.selectedIndex].value;
+
+        let nuevoValor = this.shadow.querySelector('#nuevo_valor').value;
+
+    
+        this.showView('viewSignUpForm', 'loading');
+
+    let requestData = {
+        callType: '',
+        carId: carIdToModify,
+        opcionSelect: opcionSeleccionada,
+        NewValue: nuevoValor,
+    };
+
+    let resultData = await this.callServer(requestData);
+    if (resultData.result == 'OK') {
+        // Si la eliminación es exitosa, realizar acciones correspondientes
+        // Mostrar mensajes, actualizar la interfaz, etc.
+        console.log('Car deleted successfully');
+    } else {
+        // Si hay un error al eliminar, manejarlo aquí
+        // Mostrar mensajes de error, etc.
+        console.error('Error deleting car');
+    }
+}
+
 // ****************** Modo de vistas para el create, edit y delete  ******************************
 handleModButtonClick(event) {
     const viewType = event.currentTarget.getAttribute('data-view-type');
