@@ -36,35 +36,68 @@ class UserLogin extends HTMLElement {
       ////
       this.shadow.querySelectorAll('.modButton').forEach(button => {
         button.addEventListener('click', this.handleModButtonClick.bind(this));
-    });
-    // Agregar el event listener para el botón de "Create"
-    this.shadow.querySelectorAll('.createCarButton').forEach(button => {
-        button.addEventListener('click', this.actionCreate.bind(this));
-    });
-    // Agregar el event listener para el botón de "Modify"
-    this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
-        button.addEventListener('click', this.actionModifyCar.bind(this));
-    });
-    // Agregar el event listener para el botón de "delete"
-    this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
-        button.addEventListener('click', this.actionDeleteCar.bind(this));
-    });
-    ///
-    // this.shadow.querySelectorAll('.table').forEach(button => {
-    //     button.addEventListener('click', this.displayCoches.bind(this));
-    // });
-    this.shadow.querySelectorAll('.table').forEach(button => {
-        button.addEventListener('click', this.displayCoches.bind(this));
-      });
-      
-    // Llamar a displayCoches automáticamente al cargar la página
-    this.displayCoches();
-    // ...
+        });
+        // Agregar el event listener para el botón de "Create"
+        this.shadow.querySelectorAll('.createCarButton').forEach(button => {
+            button.addEventListener('click', this.actionCreate.bind(this));
+        });
+        // Agregar el event listener para el botón de "Modify"
+        this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
+            button.addEventListener('click', this.actionModifyCar.bind(this));
+        });
+        // Agregar el event listener para el botón de "delete"
+        this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
+            button.addEventListener('click', this.actionDeleteCar.bind(this));
+        });
+        ///
+        // this.shadow.querySelectorAll('.table').forEach(button => {
+        //     button.addEventListener('click', this.displayCoches.bind(this));
+        // });
+        this.shadow.querySelectorAll('.table').forEach(button => {
+            button.addEventListener('click', this.displayCoches.bind(this));
+        });
+        
+        // Llamar a displayCoches automáticamente al cargar la página
+        this.displayCoches();
+        // ...
 
+        const columnNumberInput = this.shadow.querySelector('#columnNumber');
+        const columnFields = this.shadow.querySelector('#columnFields');
 
-    // Automàticament, validar l'usuari per 'token' (si n'hi ha)
-    await this.actionCheckUserByToken()
-} 
+        columnNumberInput.addEventListener('input', () => {
+            columnFields.innerHTML = '';
+
+            const numberOfColumns = parseInt(columnNumberInput.value, 10);
+
+            for (let i = 0; i < numberOfColumns; i++) {
+                const columnDiv = document.createElement('div');
+                columnDiv.classList.add('columnField');
+
+                const columnNameInput = document.createElement('input');
+                columnNameInput.placeholder = `Nombre columna ${i + 1}`;
+
+                const columnTypeSelect = document.createElement('select');
+                const varcharOption = document.createElement('option');
+                varcharOption.value = 'VARCHAR';
+                varcharOption.text = 'VARCHAR';
+                const intOption = document.createElement('option');
+                intOption.value = 'INT';
+                intOption.text = 'INT';
+                columnTypeSelect.appendChild(varcharOption);
+                columnTypeSelect.appendChild(intOption);
+
+                columnDiv.appendChild(columnNameInput);
+                columnDiv.appendChild(columnTypeSelect);
+
+                columnFields.appendChild(columnDiv);
+            }
+
+            columnFields.style.display = 'block';
+        });
+
+        // Automàticament, validar l'usuari per 'token' (si n'hi ha)
+        await this.actionCheckUserByToken()
+    } 
 
   // *******************CREACION FILAS *************************
   async actionCreate() {

@@ -232,7 +232,7 @@ async function actionCreateCar(objPost) {
   }
 }
 
-// ****************** FUCNION ELIMINAR FILA DE LA TABLA ******************************
+// ****************** FUNCION ELIMINAR FILA DE LA TABLA ******************************
 async function actionDeleteCar(objPost) {
   let carIdToDelete = objPost.carId;
 

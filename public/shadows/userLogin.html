@@ -4,7 +4,7 @@
         <div id="infoUser">User Name</div>
         <div>
             <button class="table" id="table" style="display: none;">Mostrar tabla</button>
-            <p>Base de datos de marcas de coches:</p>
+            <p>Base de datos de: </p>
             <table id="cochesTable">
                 <thead>
                   <tr>
@@ -26,6 +26,11 @@
         <button class="modButton" id="Create" data-view-type="Create">Create</button>
         <button class="modButton" id="Modify" data-view-type="Modify">Modify</button>
         <button class="modButton" id="Delete" data-view-type="Delete">Delete</button>
+        <br><br>
+        <button class="modButton" id="CreateTable" data-view-type="CreateTable">Create Table</button>
+        <button class="modButton" id="ModifyTable" data-view-type="ModifyTable">Modify Table</button>
+        <button class="modButton" id="DeleteTable" data-view-type="DeleteTable">Delete Table</button>
+     
         <br>
         <div class="modView" id="CreateMod" style="display: none;">
             <h6 class="title2">Create a car</h6>
@@ -67,7 +72,7 @@
                 <label for="nuevo_valor">Nuevo valor:</label>
                 <input type="text" id="nuevo_valor" name="nuevo_valor">
                 
-                <button class="modifyCarButton" id="modifyCarButton">modify Car</button>
+                <button class="modifyCarButton" id="modifyCarButton" style="display: none;">modify Car</button>
             </form>
         </div>
         <div class="modView" id="Deletemod" style="display: none;">
@@ -81,6 +86,49 @@
             </form>
             <div id="cocheInfo"></div>
         </div>
+
+        <!-- BOTON CREAR TABLA -->
+        <div class="modView" id="CreateTableMod" style="display: none;">
+            <h6 class="title2">Create Table</h6>
+            <form id="createTableForm">
+                <label for="tableName">Nombre de la tabla:</label>
+                <input type="text" id="tableName">
+                <br>
+                <label for="columnNumber">Número de columnas:</label>
+                <input type="number" id="columnNumber" min="1">
+            </form>
+
+            <!-- Formulario dinámico para las columnas -->
+            <div id="columnFields" style="display: none;"></div>
+
+            <!-- Botón para crear la tabla -->
+            <button id="createTableButton">Crear Tabla</button>
+        </div>
+
+        
+
+
+        <!-- BOTON MODIFICAR TABLA -->
+        <div class="modView" id="ModifyTableMod" style="display: none;">
+            <h6 class="title2">Modify Table</h6>
+            <!-- Contenido de Create -->
+           
+
+            <button class="modifyTableButton" id="modifyTableButton">Modify Table</button>
+            
+        </div>
+
+        <!-- BOTON ELIMINAR TABLA -->
+        <div class="modView" id="DeleteTableMod" style="display: none;">
+            <h6 class="title2">Delete Table</h6>
+            <!-- Contenido de Create -->
+           
+
+            <button class="deleteTableButton" id="deleteTableButton">Delete Table</button>
+            
+        </div>
+
+        
         </div>
         <div id="infoLoading" class="loading">Loading ...</div>
         <div class="row">
