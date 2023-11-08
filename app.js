@@ -5,13 +5,24 @@ const { v4: uuidv4 } = require('uuid')
 const database = require('./utilsMySQL.js')
 const shadowsObj = require('./utilsShadows.js')
 const app = express()
-const port = 3010
+const port = 3001
+
+// Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
+// let hash0 = crypto.createHash('md5').update("1234").digest("hex")
+// let hash1 = crypto.createHash('md5').update("abcd").digest("hex")
+// let users = [
+//   {userName: 'user0', password: hash0, token: ''},
+//   {userName: 'user1', password: hash1, token: ''}
+// ]
+
+// Inicialitzar objecte de shadows
+let shadows = new shadowsObj()
 
 // Crear i configurar l'objecte de la base de dades
 var db = new database()
 db.init({
   host: "localhost",
-  port: 3306,
+  port: 3308,
   user: "root",
   password: "pwd",
   database: "BaseDatosUser"
@@ -27,46 +38,18 @@ db2.init({
   database: "coches"
 })
 
-// Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
-// let hash0 = crypto.createHash('md5').update("1234").digest("hex")
-// let hash1 = crypto.createHash('md5').update("abcd").digest("hex")
-// let users = [
-//   {userName: 'user0', password: hash0, token: ''},
-//   {userName: 'user1', password: hash1, token: ''}
-// ]
-
-
-
-// Inicialitzar objecte de shadows
-let shadows = new shadowsObj()
-
 // Publicar arxius carpeta ‘public’ 
 app.use(express.static('public'))
 
 // Configurar per rebre dades POST en format JSON
 app.use(express.json());
 
-
-// Configurar dirección '/testDB'
-// app.get('/testDB', testDB);
-
-// async function testDB(req, res) {
-//   try {
-//     let rst = await db.query('select * from users');
-//     res.send(rst);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Error al acceder a la base de datos');
-//   }
-// }
-
-
-
 // Activar el servidor 
 const httpServer = app.listen(port, appListen)
 async function appListen () {
   await shadows.init('./public/index.html', './public/shadows')
   console.log(`Example app listening on: http://localhost:${port}`)
+  console.log(`Development queries on: http://localhost:${port}/index-dev.html`)
 }
 
 // Close connections when process is killed
@@ -100,6 +83,9 @@ app.post('/ajaxCall', ajaxCall)
 async function ajaxCall (req, res) {
   let objPost = req.body;
   let result = ""
+    
+
+
 
   // Simulate delay (1 second)
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -112,6 +98,7 @@ async function ajaxCall (req, res) {
       case 'actionSignUp':            result = await actionSignUp(objPost); break
       case 'actionCreateCar':         result = await actionCreateCar(objPost); break;  
       case 'actionDeleteCar':           result = await actionDeleteCar(objPost);break;
+      case 'mostrarTabla':           result = await actionTabla(objPost);break;
       case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
 
       default:
@@ -119,14 +106,18 @@ async function ajaxCall (req, res) {
           break;
   }
 
+  // Retornar el resultat
   res.send(result)
+
 }
+
+
 
 async function actionCheckUserByToken (objPost) {
   let tokenValue = objPost.token
   // Si troba el token a les dades, retorna el nom d'usuari
   let users = await db.query('select * from users');
-    console.log(users);
+  console.log(users, tokenValue)
   let user = users.find(u => u.token == tokenValue)
   if (!user) {
       return {result: 'KO'}
@@ -137,9 +128,8 @@ async function actionCheckUserByToken (objPost) {
 
 async function actionLogout (objPost) {
   let tokenValue = objPost.token
-  // Si troba el token a les dades, retorna el nom d'usuari
   let users = await db.query('select * from users');
-    console.log(users);
+  // Si troba el token a les dades, retorna el nom d'usuari
   let user = users.find(u => u.token == tokenValue)
   if (!user) {
       return {result: 'OK'}
@@ -148,6 +138,7 @@ async function actionLogout (objPost) {
   }
 }
 
+
 async function actionLogin(objPost) {
   let userName = objPost.userName;
   let userPassword = objPost.userPassword;
@@ -155,7 +146,7 @@ async function actionLogin(objPost) {
 
   try {
     let users = await db.query('select * from users');
-    console.log(users);
+    //console.log(users);
 
     // Buscar el usuario en los datos
     let user = users.find(u => u.userName == userName && u.password == hash);
@@ -164,7 +155,15 @@ async function actionLogin(objPost) {
       return { result: 'KO' };
     } else {
       let token = uuidv4();
-      user.token = token;
+      //user.token = token;
+      ////
+      const edittoken = {
+        userName: userName,
+        tokenn: token
+      };
+      const sqlQuery = `UPDATE users SET token = '${edittoken.tokenn}' WHERE userName = '${edittoken.userName}'`;
+      const queryResult = await db.query(sqlQuery);
+      console.log('Query Result:', queryResult);
       return { result: 'OK', userName: user.userName, token: token };
     }
   } catch (error) {
@@ -172,7 +171,6 @@ async function actionLogin(objPost) {
     return { result: 'Error al acceder a la base de datos' };
   }
 }
-
 
 async function actionSignUp(objPost) {
   let userName = objPost.userName;
@@ -206,7 +204,6 @@ async function actionSignUp(objPost) {
 }
 
 // ******************* FUNCION INSERTAR COCHES EN LA TABLA *****************************
-
 async function actionCreateCar(objPost) {
   let marca = objPost.marca;
   let modelo = objPost.modelo;
@@ -235,8 +232,6 @@ async function actionCreateCar(objPost) {
   }
 }
 
-//**************************************************************************************************************************** */
-
 // ****************** FUCNION ELIMINAR FILA DE LA TABLA ******************************
 async function actionDeleteCar(objPost) {
   let carIdToDelete = objPost.carId;
@@ -259,23 +254,50 @@ async function actionDeleteCar(objPost) {
   }
 }
 
+// ****************** Mostrar las FILAS DE LAS TABLAS ******************************
+async function actionTabla() {
+  console.log("si vaaaa");
+  try {
+    // Realizar la lógica para obtener los datos de la base de datos
+    // Ejemplo usando una consulta SELECT:
+    const mostrarTabla = `select * from coche`;
+    const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
+    console.log(queryResult);
+    if (queryResult.length > 0) {
+      return { result: 'OK', data: queryResult };
+    } else {
+      return { result: 'KO', message: 'No se encontraron coches' };
+    }
+  } catch (error) {
+    console.error("Error al obtener datos de coches:", error);
+    return { result: 'Error', error: error.message };
+  }
+}
+
 
 // *************************** MODIFY **********************************************************
 
 async function actionGetCarInfo(objPost) {
   let carId = objPost.carId;
+  let opcionSelect = objPost.opcionSelect;
+  let NewValue = objPost.NewValue;
+  const edittoken2 = {
+    carId: carId,
+    opcionSelect: opcionSelect,
+    NewValue: NewValue
+
+  };
+  const querymodyfy = `UPDATE coche SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
 
   try {
-      const query = `SELECT * FROM coche WHERE id = ${carId}`;
-      const carInfo = await db2.query(query);
+    // Realizar la consulta a la base de datos y esperar la respuesta
+    const queryResult3 = await db2.query(querymodyfy);
+    console.log('Query Result:', queryResult3); 
 
-      if (carInfo.length > 0) {
-          return { result: 'OK', carDetails: carInfo[0] };
-      } else {
-          return { result: 'KO', message: 'Car details not found' };
-      }
+    return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
   } catch (error) {
-      console.error("Error getting car information:", error);
-      return { result: 'Error', error: error.message };
+    // Manejar errores, por ejemplo:
+    console.error("Error al ejecutar la consulta:", error);
+    return { result: 'Error', error: error.message };
   }
 }

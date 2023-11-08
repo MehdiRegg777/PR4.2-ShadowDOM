@@ -2,7 +2,24 @@
     <div id="viewInfo">
         <div class="title">Login info</div>
         <div id="infoUser">User Name</div>
-        <p>Base de datos de marcas de coches:</p>
+        <div>
+            <button class="table" id="table" style="display: none;">Mostrar tabla</button>
+            <p>Base de datos de marcas de coches:</p>
+            <table id="cochesTable">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Año</th>
+                    <th>Color</th>
+                    <th>Precio</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyId">
+                  <!-- Los datos se mostrarán aquí -->
+                </tbody>
+              </table>
         <br>
         
         <br>
@@ -34,17 +51,26 @@
         </div>
         <div class="modView" id="ModifyMod" style="display: none;">
             <h6 class="title2">Modify a car</h6>
+            <!-- Contenido de Modify -->
             <form id="modifyCarForm">
                 <label for="carIdToModify">ID del Coche a Modificar:</label>
-                <input type="text" id="carIdToModify">
-                <button class="modifyCarButton" id="modifyCarButton">Modificar Coche</button>
+                <input type="text" id="carIdToModify"><br>
+                <label for="opciones">Selecciona una opción a modificar:</label>
+                <select id="opciones" name="opcion">
+                    <option value="Marca">Marca</option>
+                    <option value="Modelo">Modelo</option>
+                    <option value="Any">Año</option>
+                    <option value="Color">Color</option>
+                    <option value="Precio">Precio</option>
+                </select>
+                <br>
+                <label for="nuevo_valor">Nuevo valor:</label>
+                <input type="text" id="nuevo_valor" name="nuevo_valor">
+                
+                <button class="modifyCarButton" id="modifyCarButton">modify Car</button>
             </form>
-            <div id="carInfoToModify">
-                <!-- Aquí se mostrará la información del coche seleccionado para modificar -->
-            </div>
         </div>
-        
-        <div class="modView" id="DeleteMod" style="display: none;">
+        <div class="modView" id="Deletemod" style="display: none;">
             <h6 class="title2">Delete a car</h6>
             <!-- Contenido de Delete -->
             <form id="deleteCarForm">
@@ -55,9 +81,7 @@
             </form>
             <div id="cocheInfo"></div>
         </div>
-      
-        <br>
-
+        </div>
         <div id="infoLoading" class="loading">Loading ...</div>
         <div class="row">
             <button id="infoBtnLogOut">Logout</button>

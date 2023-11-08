@@ -32,118 +32,200 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpPasswordCheck').addEventListener('input', this.checkSignUpPasswords.bind(this))
         this.shadow.querySelector('#signUpBtn').addEventListener('click', this.actionSignUp.bind(this))
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
-        ////
-        this.shadow.querySelectorAll('.modButton').forEach(button => {
-            button.addEventListener('click', this.handleModButtonClick.bind(this));
-        });
-        // Agregar el event listener para el botón de "Create"
-        this.shadow.querySelectorAll('.createCarButton').forEach(button => {
-            button.addEventListener('click', this.actionCreate.bind(this));
-        });
 
-        // Agregar el event listener para el botón de "delete"
-        this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
-            button.addEventListener('click', this.actionDeleteCar.bind(this));
-        });
+      ////
+      this.shadow.querySelectorAll('.modButton').forEach(button => {
+        button.addEventListener('click', this.handleModButtonClick.bind(this));
+    });
+    // Agregar el event listener para el botón de "Create"
+    this.shadow.querySelectorAll('.createCarButton').forEach(button => {
+        button.addEventListener('click', this.actionCreate.bind(this));
+    });
+    // Agregar el event listener para el botón de "Modify"
+    this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
+        button.addEventListener('click', this.actionModifyCar.bind(this));
+    });
+    // Agregar el event listener para el botón de "delete"
+    this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
+        button.addEventListener('click', this.actionDeleteCar.bind(this));
+    });
+    ///
+    // this.shadow.querySelectorAll('.table').forEach(button => {
+    //     button.addEventListener('click', this.displayCoches.bind(this));
+    // });
+    this.shadow.querySelectorAll('.table').forEach(button => {
+        button.addEventListener('click', this.displayCoches.bind(this));
+      });
+      
+    // Llamar a displayCoches automáticamente al cargar la página
+    this.displayCoches();
+    // ...
 
-        // Agregar el event listener par el boton de "modify"
-        this.shadow.querySelectorAll('.modButton').forEach(button => {
-            button.addEventListener('click', this.handleModButtonClick.bind(this));
-        });
-        
-        // Agregar el event listener para el botón de "Modify"
-        this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
-            button.addEventListener('click', this.actionModifyCar.bind(this));
-        });
-        
+
+    // Automàticament, validar l'usuari per 'token' (si n'hi ha)
+    await this.actionCheckUserByToken()
+} 
+
+  // *******************CREACION FILAS *************************
+  async actionCreate() {
+    let marcaInput = this.shadow.querySelector('#marcaInput')
+    let modeloInput = this.shadow.querySelector('#modeloInput')
+    let añoInput = this.shadow.querySelector('#añoInput')
+    let colorInput = this.shadow.querySelector('#colorInput')
+    let precioInput = this.shadow.querySelector('#precioInput')
+    // Mostrar la vista
+    this.showView('viewSignUpForm', 'loading')
+
+    let requestData = {
+        callType: 'actionCreateCar',
+        marca: marcaInput.value,
+        modelo: modeloInput.value,
+        any: añoInput.value,
+        color: colorInput.value,
+        precio: precioInput.value,
+    }
+    let resultData = await this.callServer(requestData)
+    if (resultData.result == 'Coches') {
+        this.setUserInfo(resultData.marca, resultData.modelo, resultData.any, resultData.color, resultData.precio)
+        this.showView('viewInfo')
+    } else {
+        console.log("Fallo");
+    }      
     
+}
+ // ****************** ELIMINAR FILAS ******************************
+ async actionDeleteCar() {
+    let carIdToDelete = this.shadow.querySelector('#carIdToDelete').value;
 
+    // Mostrar la vista
+    this.showView('viewSignUpForm', 'loading');
 
-        // Automàticament, validar l'usuari per 'token' (si n'hi ha)
-        await this.actionCheckUserByToken()
-    } 
+    let requestData = {
+        callType: 'actionDeleteCar',
+        carId: carIdToDelete,
+    };
 
-    // ************** CREACION FILAS *************************
-    async actionCreate() {
-        let marcaInput = this.shadow.querySelector('#marcaInput')
-        let modeloInput = this.shadow.querySelector('#modeloInput')
-        let añoInput = this.shadow.querySelector('#añoInput')
-        let colorInput = this.shadow.querySelector('#colorInput')
-        let precioInput = this.shadow.querySelector('#precioInput')
-        // Mostrar la vista
-        this.showView('viewSignUpForm', 'loading')
-
-        let requestData = {
-            callType: 'actionCreateCar',
-            marca: marcaInput.value,
-            modelo: modeloInput.value,
-            any: añoInput.value,
-            color: colorInput.value,
-            precio: precioInput.value,
-        }
-        await this.callServer(requestData)
-        
+    let resultData = await this.callServer(requestData);
+    if (resultData.result == 'OK') {
+        // Si la eliminación es exitosa, realizar acciones correspondientes
+        // Mostrar mensajes, actualizar la interfaz, etc.
+        console.log('Car deleted successfully');
+    } else {
+        // Si hay un error al eliminar, manejarlo aquí
+        // Mostrar mensajes de error, etc.
+        console.error('Error deleting car');
     }
-
-    // ... (otro código)
-    // ****************** ELIMINAR FILAS ******************************
-    async actionDeleteCar() {
-            let carIdToDelete = this.shadow.querySelector('#carIdToDelete').value;
-
-            // Mostrar la vista
-            this.showView('viewSignUpForm', 'loading');
-
-            let requestData = {
-                callType: 'actionDeleteCar',
-                carId: carIdToDelete,
-            };
-
-            let resultData = await this.callServer(requestData);
-            if (resultData.result == 'OK') {
-                // Si la eliminación es exitosa, realizar acciones correspondientes
-                // Mostrar mensajes, actualizar la interfaz, etc.
-                console.log('Car deleted successfully');
-            } else {
-                // Si hay un error al eliminar, manejarlo aquí
-                // Mostrar mensajes de error, etc.
-                console.error('Error deleting car');
-            }
-    }
+}
 
     // **************************************MODIFY**********************************************
     
     async actionModifyCar() {
         let carIdToModify = this.shadow.querySelector('#carIdToModify').value;
+
+        let opcionesSelect = this.shadow.querySelector('#opciones');
+        let opcionSeleccionada = opcionesSelect.options[opcionesSelect.selectedIndex].value;
+
+        let nuevoValor = this.shadow.querySelector('#nuevo_valor').value;
+
     
-        // Mostrar la vista
-        this.showView('ModifyMod', 'loading');
-    
-        let requestData = {
-            callType: 'actionGetCarInfo',
-            carId: carIdToModify,
-        };
-    
-        let resultData = await this.callServer(requestData);
-        if (resultData.result === 'OK') {
-            const carInfoDiv = this.shadow.querySelector('#carInfoToModify');
-            const carDetails = resultData.carDetails;
-    
-            // Mostrar la información del coche en el div 'carInfoToModify'
-            carInfoDiv.innerHTML = `
-                <p>Marca: ${carDetails.marca}</p>
-                <p>Modelo: ${carDetails.modelo}</p>
-                <p>Año: ${carDetails.any}</p>
-                <p>Color: ${carDetails.color}</p>
-                <p>Precio: ${carDetails.precio}</p>
-            `;
-        } else {
-            console.error('Error getting car information for modification');
-        }
+        this.showView('viewSignUpForm', 'loading');
+
+    let requestData = {
+        callType: 'actionGetCarInfo',
+        carId: carIdToModify,
+        opcionSelect: opcionSeleccionada,
+        NewValue: nuevoValor,
+    };
+
+    let resultData = await this.callServer(requestData);
+    if (resultData.result == 'OK') {
+        // Si la eliminación es exitosa, realizar acciones correspondientes
+        // Mostrar mensajes, actualizar la interfaz, etc.
+        console.log('Car deleted successfully');
+    } else {
+        // Si hay un error al eliminar, manejarlo aquí
+        // Mostrar mensajes de error, etc.
+        console.error('Error deleting car');
     }
-    
-    
-    
+}
+
+// ****************** Modo de vistas para el create, edit y delete  ******************************
+handleModButtonClick(event) {
+    const viewType = event.currentTarget.getAttribute('data-view-type');
+
+    // Ocultar todas las vistas de modificación
+    this.shadow.querySelectorAll('.modView').forEach(view => {
+        view.style.display = 'none';
+    });
+
+    // Mostrar la vista correspondiente
+    const viewToShow = this.shadow.querySelector(`#${viewType}Mod`);
+    if (viewToShow) {
+        viewToShow.style.removeProperty('display');
+    }
+
+    // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
+    // switch (viewType) {
+    //     case 'Create':
+    //         // Acciones específicas para Create
+    //         break;
+    //     case 'Modify':
+    //         // Acciones específicas para Modify
+    //         break;
+    //     case 'Delete':
+    //         // Acciones específicas para Delete
+    //         break;
+    // }
+}
+
+ // ****************** MOSTRAR TABLA ******************************
+ async displayCoches() {
+    try {
+      const tbody = this.shadow.getElementById('tbodyId');
+      console.log(tbody);
+      if (tbody) {
+        let data = {
+            callType: 'mostrarTabla'
+        };
+        let resultData = await this.callServer(data);
+        console.log(resultData);
+
+        if (resultData.result === 'OK') {
+        // Borra filas existentes
+        tbody.innerHTML = '';
+        // Llena la tabla con los datos
+        resultData.data.forEach(coche => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${coche.ID}</td>
+            <td>${coche.Marca}</td>
+            <td>${coche.Modelo}</td>
+            <td>${coche.Any}</td>
+            <td>${coche.Color}</td>
+            <td>${coche.Precio}</td>
+            `;
+            tbody.appendChild(row);
+        });
+        } else {
+            const tbody = this.shadow.getElementById('tbodyId');
   
+          // Muestra un mensaje de error si no se encontraron coches
+          tbody.innerHTML = `<tr><td colspan="5">"${data.message}"</td></tr>`;
+        }      
+    } else {
+        console.error("Elemento tbody no encontrado en el DOM");
+    }
+      
+    } catch (error) {
+
+      console.error("Error al mostrar coches:", error);
+      // Muestra un mensaje de error en caso de un error en la solicitud
+      tbody.innerHTML = `<tr><td colspan="5">Error al obtener los datos de los coches</td></tr>`;
+    }
+  }
+
+
+// *******************************************************************************************
 
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
@@ -182,7 +264,7 @@ class UserLogin extends HTMLElement {
             refButton.disabled = true
             break
         case 'logged':
-            refUserName.innerText = "Usuario: "+ window.localStorage.getItem("userName")
+            refUserName.innerText = window.localStorage.getItem("userName")
             refLoading.style.opacity = 0
             refButton.disabled = false
             break
@@ -305,51 +387,23 @@ class UserLogin extends HTMLElement {
         }
     }
 
-    handleModButtonClick(event) {
-        const viewType = event.currentTarget.getAttribute('data-view-type');
-    
-        // Ocultar todas las vistas de modificación
-        this.shadow.querySelectorAll('.modView').forEach(view => {
-            view.style.display = 'none';
-        });
-    
-        // Mostrar la vista correspondiente
-        const viewToShow = this.shadow.querySelector(`#${viewType}Mod`);
-        if (viewToShow) {
-            viewToShow.style.removeProperty('display');
-        }
-    
-        // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
-        // switch (viewType) {
-        //     case 'Create':
-        //         // Acciones específicas para Create
-        //         break;
-        //     case 'Modify':
-        //         // Acciones específicas para Modify
-        //         break;
-        //     case 'Delete':
-        //         // Acciones específicas para Delete
-        //         break;
-        // }
-    }
-
     async actionLogout() {
-    // Mostrar la vista amb status 'loading'
-    this.showView('viewInfo', 'loading')
+        // Mostrar la vista amb status 'loading'
+        this.showView('viewInfo', 'loading')
 
-    // Identificar usuari si hi ha "token" al "LocalStorage"
-    let tokenValue = window.localStorage.getItem("token")
-    if (tokenValue) {
-        let requestData = {
-            callType: 'actionLogout',
-            token: tokenValue
-        }
-        await this.callServer(requestData)
-    } 
+        // Identificar usuari si hi ha "token" al "LocalStorage"
+        let tokenValue = window.localStorage.getItem("token")
+        if (tokenValue) {
+            let requestData = {
+                callType: 'actionLogout',
+                token: tokenValue
+            }
+            await this.callServer(requestData)
+        } 
 
-    // Tan fa la resposta, esborrem les dades
-    this.setUserInfo('', '')
-    this.showView('viewLoginForm', 'initial')
+        // Tan fa la resposta, esborrem les dades
+        this.setUserInfo('', '')
+        this.showView('viewLoginForm', 'initial')
     }
 
     async actionLogin() {
@@ -430,8 +484,6 @@ class UserLogin extends HTMLElement {
         }
         return resultData
     }
-
-    
 }
 
 // Defineix l'element personalitzat
