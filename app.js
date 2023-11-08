@@ -273,3 +273,31 @@ async function actionTabla() {
     return { result: 'Error', error: error.message };
   }
 }
+
+
+// *************************** MODIFY **********************************************************
+
+async function actionGetCarInfo(objPost) {
+  let carId = objPost.carId;
+  let opcionSelect = objPost.opcionSelect;
+  let NewValue = objPost.NewValue;
+  const edittoken2 = {
+    carId: carId,
+    opcionSelect: opcionSelect,
+    NewValue: NewValue
+
+  };
+  const querymodyfy = `UPDATE coche SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
+
+  try {
+    // Realizar la consulta a la base de datos y esperar la respuesta
+    const queryResult3 = await db2.query(querymodyfy);
+    console.log('Query Result:', queryResult3); 
+
+    return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
+  } catch (error) {
+    // Manejar errores, por ejemplo:
+    console.error("Error al ejecutar la consulta:", error);
+    return { result: 'Error', error: error.message };
+  }
+}
