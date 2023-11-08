@@ -117,7 +117,7 @@ async function actionCheckUserByToken (objPost) {
   let tokenValue = objPost.token
   // Si troba el token a les dades, retorna el nom d'usuari
   let users = await db.query('select * from users');
-  console.log(users, tokenValue)
+  //console.log(users, tokenValue)
   let user = users.find(u => u.token == tokenValue)
   if (!user) {
       return {result: 'KO'}
@@ -163,7 +163,7 @@ async function actionLogin(objPost) {
       };
       const sqlQuery = `UPDATE users SET token = '${edittoken.tokenn}' WHERE userName = '${edittoken.userName}'`;
       const queryResult = await db.query(sqlQuery);
-      console.log('Query Result:', queryResult);
+      //console.log('Query Result:', queryResult);
       return { result: 'OK', userName: user.userName, token: token };
     }
   } catch (error) {
@@ -256,13 +256,13 @@ async function actionDeleteCar(objPost) {
 
 // ****************** Mostrar las FILAS DE LAS TABLAS ******************************
 async function actionTabla() {
-  console.log("si vaaaa");
+  //console.log("si vaaaa");
   try {
     // Realizar la lógica para obtener los datos de la base de datos
     // Ejemplo usando una consulta SELECT:
     const mostrarTabla = `select * from coche`;
     const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
-    console.log(queryResult);
+    //console.log(queryResult);
     if (queryResult.length > 0) {
       return { result: 'OK', data: queryResult };
     } else {
@@ -292,7 +292,7 @@ async function actionGetCarInfo(objPost) {
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult3 = await db2.query(querymodyfy);
-    console.log('Query Result:', queryResult3); 
+    //console.log('Query Result:', queryResult3); 
 
     return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
   } catch (error) {
