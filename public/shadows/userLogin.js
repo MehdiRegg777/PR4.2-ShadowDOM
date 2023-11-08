@@ -41,6 +41,10 @@ class UserLogin extends HTMLElement {
     this.shadow.querySelectorAll('.createCarButton').forEach(button => {
         button.addEventListener('click', this.actionCreate.bind(this));
     });
+    // Agregar el event listener para el botón de "Modify"
+    this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
+        button.addEventListener('click', this.actionModifyCar.bind(this));
+    });
     // Agregar el event listener para el botón de "delete"
     this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
         button.addEventListener('click', this.actionDeleteCar.bind(this));
