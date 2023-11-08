@@ -199,6 +199,7 @@ handleModButtonClick(event) {
             row.innerHTML = `
             <td>${coche.ID}</td>
             <td>${coche.Marca}</td>
+            <td>${coche.Modelo}</td>
             <td>${coche.Any}</td>
             <td>${coche.Color}</td>
             <td>${coche.Precio}</td>
