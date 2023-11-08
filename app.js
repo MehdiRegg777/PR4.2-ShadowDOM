@@ -254,6 +254,7 @@ async function actionDeleteCar(objPost) {
 
 // ****************** Mostrar las FILAS DE LAS TABLAS ******************************
 async function actionTabla() {
+  console.log("si vaaaa");
   try {
     // Realizar la lógica para obtener los datos de la base de datos
     // Ejemplo usando una consulta SELECT:
