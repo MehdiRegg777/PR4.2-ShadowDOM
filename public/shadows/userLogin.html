@@ -51,6 +51,22 @@
         <div class="modView" id="ModifyMod" style="display: none;">
             <h6 class="title2">Modify a car</h6>
             <!-- Contenido de Modify -->
+            <form id="modifyCarForm">
+                <label for="carIdToModify">ID del Coche a Modificar:</label>
+                <input type="text" id="carIdToModify"><br>
+                <label for="opciones">Selecciona una opción a modificar:</label>
+                <select id="opciones" name="opcion">
+                    <option value="Marca">Marca</option>
+                    <option value="Año">Año</option>
+                    <option value="Color">Color</option>
+                    <option value="Precio">Precio</option>
+                </select>
+                <br>
+                <label for="nuevo_valor">Nuevo valor:</label>
+                <input type="text" id="nuevo_valor" name="nuevo_valor">
+            
+                <input type="submit" value="Modificar">
+            </form>
         </div>
         <div class="modView" id="Deletemod" style="display: none;">
             <h6 class="title2">Delete a car</h6>
