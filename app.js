@@ -99,6 +99,8 @@ async function ajaxCall (req, res) {
       case 'actionCreateCar':         result = await actionCreateCar(objPost); break;  
       case 'actionDeleteCar':           result = await actionDeleteCar(objPost);break;
       case 'mostrarTabla':           result = await actionTabla(objPost);break;
+      case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
+
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;

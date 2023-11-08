@@ -131,7 +131,7 @@ class UserLogin extends HTMLElement {
         this.showView('viewSignUpForm', 'loading');
 
     let requestData = {
-        callType: '',
+        callType: 'actionGetCarInfo',
         carId: carIdToModify,
         opcionSelect: opcionSeleccionada,
         NewValue: nuevoValor,
