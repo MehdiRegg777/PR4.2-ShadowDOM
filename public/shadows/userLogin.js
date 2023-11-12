@@ -60,7 +60,40 @@ class UserLogin extends HTMLElement {
     // Llamar a displayCoches automáticamente al cargar la página
     this.displayCoches();
     // ...
+    // CREACION TABLA //
+    const columnNumberInput = this.shadow.querySelector('#columnNumber');
+    const columnFields = this.shadow.querySelector('#columnFields');
 
+    columnNumberInput.addEventListener('input', () => {
+        columnFields.innerHTML = '';
+
+        const numberOfColumns = parseInt(columnNumberInput.value, 10);
+
+        for (let i = 0; i < numberOfColumns; i++) {
+            const columnDiv = document.createElement('div');
+            columnDiv.classList.add('columnField');
+
+            const columnNameInput = document.createElement('input');
+            columnNameInput.placeholder = `Nombre columna ${i + 1}`;
+
+            const columnTypeSelect = document.createElement('select');
+            const varcharOption = document.createElement('option');
+            varcharOption.value = 'VARCHAR';
+            varcharOption.text = 'VARCHAR';
+            const intOption = document.createElement('option');
+            intOption.value = 'INT';
+            intOption.text = 'INT';
+            columnTypeSelect.appendChild(varcharOption);
+            columnTypeSelect.appendChild(intOption);
+
+            columnDiv.appendChild(columnNameInput);
+            columnDiv.appendChild(columnTypeSelect);
+
+            columnFields.appendChild(columnDiv);
+        }
+
+        columnFields.style.display = 'block';
+    });
 
     // Automàticament, validar l'usuari per 'token' (si n'hi ha)
     await this.actionCheckUserByToken()
