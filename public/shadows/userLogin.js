@@ -96,6 +96,12 @@ class UserLogin extends HTMLElement {
             columnFields.style.display = 'block';
         });
 
+        const createTableButton = this.shadow.querySelector('#createTableButton');
+        createTableButton.addEventListener('click', this.actionCreateTable.bind(this));
+    
+        // ... existing code ...
+    
+
 
 
         
@@ -265,6 +271,44 @@ handleModButtonClick(event) {
 
 // *******************************************************************************************
 
+
+
+
+
+  // Add a new method for handling the "Crear Tabla" button click
+async actionCreateTable() {
+    const tableName = this.shadow.querySelector('#tableName').value;
+    const numberOfColumns = parseInt(this.shadow.querySelector('#columnNumber').value, 10);
+    const columns = [];
+
+    for (let i = 0; i < numberOfColumns; i++) {
+        const columnNameInput = this.shadow.querySelector(`#columnFields > div:nth-child(${i + 1}) > input`);
+        const columnTypeSelect = this.shadow.querySelector(`#columnFields > div:nth-child(${i + 1}) > select`);
+
+        const columnName = columnNameInput.value;
+        const columnType = columnTypeSelect.value;
+
+        columns.push(`${columnName} ${columnType}`);
+    }
+
+    // Send a request to create the table
+    const response = await fetch('/ajaxCall', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            callType: 'createTable',
+            tableName: tableName,
+            columns: columns.join(', '), // Join columns into a string
+        }),
+    });
+
+    const result = await response.json();
+
+    // Handle the result as needed (display a message, update UI, etc.)
+    console.log(result);
+}
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
         let refPassword = this.shadow.querySelector('#signUpPassword')

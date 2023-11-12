@@ -57,9 +57,13 @@ process.on('SIGTERM', shutDown);
 process.on('SIGINT', shutDown);
 function shutDown() {
   console.log('Received kill signal, shutting down gracefully');
-  httpServer.close()
-  db.end()
-  process.exit(0);
+  httpServer.close(() => {
+      console.log('Server closed');
+      db2.end(() => {
+          console.log('Database connection closed');
+          process.exit(0);
+      });
+  });
 }
 
 // Configurar la direcció '/index-dev.html' per retornar
@@ -100,7 +104,9 @@ async function ajaxCall (req, res) {
       case 'actionDeleteCar':           result = await actionDeleteCar(objPost);break;
       case 'mostrarTabla':           result = await actionTabla(objPost);break;
       case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
-
+      case 'createTable': // New case for creating a table
+      result = await createTable(objPost);
+      break;
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -299,5 +305,30 @@ async function actionGetCarInfo(objPost) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);
     return { result: 'Error', error: error.message };
+  }
+}
+
+
+
+// Define the createTable function to handle the table creation
+async function createTable(objPost) {
+  try {
+      const { tableName, columns } = objPost;
+
+      // Create the SQL query to create the table
+      const createTableQuery = `CREATE TABLE ${tableName} (${columns})`;
+
+      // Execute the query
+      const queryResult = await db2.query(createTableQuery);
+
+      // Check if the table was created successfully
+      if (queryResult.affectedRows > 0) {
+          return { result: 'OK', message: 'Table created successfully' };
+      } else {
+          return { result: 'KO', message: 'Failed to create table' };
+      }
+  } catch (error) {
+      console.error("Error creating table:", error);
+      return { result: 'Error', message: error.message };
   }
 }
