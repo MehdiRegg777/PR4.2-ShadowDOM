@@ -206,29 +206,20 @@ async function actionSignUp(objPost) {
 
 // ******************* FUNCION INSERTAR COCHES EN LA TABLA *****************************
 async function actionCreateCar(objPost) {
-  let marca = objPost.marca;
-  let modelo = objPost.modelo;
-  let color = objPost.color;
-  let any = parseInt(objPost.any, 10);
-  let precio = parseInt(objPost.precio, 10);
-  console.log(marca)
+  console.log(objPost);
 
-  const ejemploUsuario = {
-    marca: marca,
-    modelo: modelo,
-    any: any,
-    color: color,
-    precio: precio
-  };
+  const tableName = objPost.tabla;
+  const columns = Object.keys(objPost).filter(key => key !== 'callType' && key !== 'tabla');
+  const values = columns.map(column => `'${objPost[column]}'`).join(', ');
 
-  const sqlQuery2 = `INSERT INTO Coche (marca, modelo, any, color, precio) VALUES ('${ejemploUsuario.marca}', '${ejemploUsuario.modelo}', '${ejemploUsuario.any}', '${ejemploUsuario.color}', '${ejemploUsuario.precio}')`;
-  console.log(sqlQuery2)
+  const sqlQuery2 = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${values})`;
+  console.log(sqlQuery2);
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult2 = await db2.query(sqlQuery2);
     console.log('Query Result:', queryResult2); 
 
-    return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
+    return { result: 'Productos Creados'};
   } catch (error) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);
@@ -269,7 +260,7 @@ async function actionTabla(objPost) {
     const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
     //console.log(queryResult);
     if (queryResult.length > 0) {
-      return { result: 'OK', data: queryResult };
+      return { result: 'OK', data: queryResult , tabla: queTabla};
     } else {
       return { result: 'KO', message: 'No se encontraron coches' };
     }
@@ -287,7 +278,7 @@ async function actionShowTabla() {
     // Ejemplo usando una consulta SELECT:
     const mostrarTabla2 = `show tables;`;
     const queryResult = await db2.query(mostrarTabla2); // Asumiendo que tienes una conexión a la base de datos llamada "db"
-    //console.log(queryResult);
+    console.log(queryResult);
     if (queryResult.length > 0) {
       return { result: 'OK', data: queryResult };
     } else {
@@ -336,11 +327,16 @@ async function actionCreateTable(objPost) {
      tableName: tableName,
   };
   const columnas = valoresInputs.map((input, index) => `${input} ${valoresSelects[index]}`).join('(50), ');
+  const columnas2 = valoresInputs.map((input) => `${input}`).join(', ');
   const sqlQuery3 = `CREATE TABLE ${ejemploUsuario.tableName} (ID INT AUTO_INCREMENT PRIMARY KEY, ${columnas}(50));`;
   console.log(sqlQuery3);
+  const sqlQuery4 = `INSERT INTO ${ejemploUsuario.tableName} (${columnas2}) VALUES (${columnas2});`;
+  console.log(sqlQuery4);
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult3 = await db2.query(sqlQuery3);
+    const queryResult4 = await db2.query(sqlQuery4);
+
     console.log('Query Result:', queryResult3); 
 
     return { result: 'Tablas', tableName: tableName};

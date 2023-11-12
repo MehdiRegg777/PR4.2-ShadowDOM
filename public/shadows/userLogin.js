@@ -37,10 +37,7 @@ class UserLogin extends HTMLElement {
       this.shadow.querySelectorAll('.modButton').forEach(button => {
         button.addEventListener('click', this.handleModButtonClick.bind(this));
     });
-    // Agregar el event listener para el botón de "Create"
-    this.shadow.querySelectorAll('.createCarButton').forEach(button => {
-        button.addEventListener('click', this.actionCreate.bind(this));
-    });
+    
     // Agregar el event listener para el botón de "Modify"
     this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
         button.addEventListener('click', this.actionModifyCar.bind(this));
@@ -63,6 +60,12 @@ class UserLogin extends HTMLElement {
     // Llamar a displayCoches automáticamente al cargar la página
     this.mostrarTablas();
     ///////
+    // Agregar el event listener para el botón de "Create"
+
+    this.shadow.querySelectorAll('.createCarButton').forEach(button => {
+        console.log('Agregando event listener al botón');
+        button.addEventListener('click', this.actionCreate.bind(this));
+    });
     
     /* this.shadow.querySelectorAll('.table').forEach(button => {
         button.addEventListener('click', this.displayCoches.bind(this));
@@ -114,32 +117,40 @@ class UserLogin extends HTMLElement {
 
   // *******************CREACION FILAS *************************
   async actionCreate() {
-    let marcaInput = this.shadow.querySelector('#Marca')
-    let modeloInput = this.shadow.querySelector('#Modelo')
-    let añoInput = this.shadow.querySelector('#Any')
-    let colorInput = this.shadow.querySelector('#Color')
-    let precioInput = this.shadow.querySelector('#Precio')
+    // Obtener todos los inputs dentro del formulario
+    let inputs = this.shadow.querySelectorAll('#createCarForm2 input');
     
-    // Mostrar la vista
-    this.showView('viewSignUpForm', 'loading')
+    // Crear un objeto para almacenar los datos del formulario
+    let requestData = { callType: 'actionCreateCar' };
 
-    let requestData = {
-        callType: 'actionCreateCar',
-        marca: marcaInput.value,
-        modelo: modeloInput.value,
-        any: añoInput.value,
-        color: colorInput.value,
-        precio: precioInput.value,
-    }
-    let resultData = await this.callServer(requestData)
+    // Obtener la información de la tabla desde el primer label
+    let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+    requestData.tabla = tabla;
+    
+    // Iterar sobre cada input y agregar su valor al objeto requestData
+    inputs.forEach(input => {
+        let inputId = input.id;
+        let inputValue = input.value;
+        requestData[inputId.toLowerCase()] = inputValue;
+    });
+    console.log(inputs);
+    console.log('actionCreate ejecutado');
+
+    // Mostrar la vista
+    this.showView('viewSignUpForm', 'loading');
+
+    // Enviar la solicitud al servidor
+    let resultData = await this.callServer(requestData);
+
+    // Verificar el resultado y mostrar la vista correspondiente
     if (resultData.result == 'Coches') {
-        this.setUserInfo(resultData.marca, resultData.modelo, resultData.any, resultData.color, resultData.precio)
-        this.showView('viewInfo')
+        this.setUserInfo(resultData.marca, resultData.modelo, resultData.any, resultData.color, resultData.precio);
+        this.showView('viewInfo');
     } else {
         console.log("Fallo");
     }      
-    
 }
+
  // ****************** ELIMINAR FILAS ******************************
  async actionDeleteCar() {
     let carIdToDelete = this.shadow.querySelector('#carIdToDelete').value;
@@ -300,7 +311,7 @@ handleModButtonClick(event) {
     try {
       const tbody = this.shadow.getElementById('tbodyId');
       const thead = this.shadow.getElementById('theadId');
-      const form = this.shadow.getElementById('createCarForm');
+      const form = this.shadow.getElementById('createCarForm2');
       console.log(tbody);
       if (tbody) {
         let data = {
@@ -314,6 +325,8 @@ handleModButtonClick(event) {
         // Borra filas existentes
         tbody.innerHTML = '';
         thead.innerHTML = '';
+        let tabla = resultData.tabla;
+        console.log(tabla);
         form.innerHTML = '';
         let firstIteration = true;
         for (const prop in resultData.data[0]) {
@@ -322,7 +335,8 @@ handleModButtonClick(event) {
                     const label = document.createElement("label");
                     label.textContent = prop;
                     label.for = prop;
-        
+                    label.setAttribute("tabla", tabla);
+
                     const input = document.createElement("input");
                     input.type = "text";
                     input.id = prop;
@@ -335,11 +349,11 @@ handleModButtonClick(event) {
             }
         }
         
-        const button = document.createElement("button")
+        /* const button = document.createElement("button")
         button.classList.add("createCarButton");
         button.id = "createCarButton";
-        button.textContent = "Create";
-        form.appendChild(button);
+        button.textContent = " Create ";
+        form.appendChild(button); */
 
         // Llena la tabla con los datos
         const headerRow = document.createElement("tr");
