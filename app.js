@@ -211,6 +211,8 @@ async function actionCreateCar(objPost) {
   let color = objPost.color;
   let any = parseInt(objPost.any, 10);
   let precio = parseInt(objPost.precio, 10);
+  console.log(marca)
+
   const ejemploUsuario = {
     marca: marca,
     modelo: modelo,
@@ -220,6 +222,7 @@ async function actionCreateCar(objPost) {
   };
 
   const sqlQuery2 = `INSERT INTO Coche (marca, modelo, any, color, precio) VALUES ('${ejemploUsuario.marca}', '${ejemploUsuario.modelo}', '${ejemploUsuario.any}', '${ejemploUsuario.color}', '${ejemploUsuario.precio}')`;
+  console.log(sqlQuery2)
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult2 = await db2.query(sqlQuery2);

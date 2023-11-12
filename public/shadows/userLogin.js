@@ -114,11 +114,12 @@ class UserLogin extends HTMLElement {
 
   // *******************CREACION FILAS *************************
   async actionCreate() {
-    let marcaInput = this.shadow.querySelector('#marcaInput')
-    let modeloInput = this.shadow.querySelector('#modeloInput')
-    let añoInput = this.shadow.querySelector('#añoInput')
-    let colorInput = this.shadow.querySelector('#colorInput')
-    let precioInput = this.shadow.querySelector('#precioInput')
+    let marcaInput = this.shadow.querySelector('#Marca')
+    let modeloInput = this.shadow.querySelector('#Modelo')
+    let añoInput = this.shadow.querySelector('#Any')
+    let colorInput = this.shadow.querySelector('#Color')
+    let precioInput = this.shadow.querySelector('#Precio')
+    
     // Mostrar la vista
     this.showView('viewSignUpForm', 'loading')
 
@@ -299,6 +300,7 @@ handleModButtonClick(event) {
     try {
       const tbody = this.shadow.getElementById('tbodyId');
       const thead = this.shadow.getElementById('theadId');
+      const form = this.shadow.getElementById('createCarForm');
       console.log(tbody);
       if (tbody) {
         let data = {
@@ -312,8 +314,34 @@ handleModButtonClick(event) {
         // Borra filas existentes
         tbody.innerHTML = '';
         thead.innerHTML = '';
-        // Llena la tabla con los datos
+        form.innerHTML = '';
+        let firstIteration = true;
+        for (const prop in resultData.data[0]) {
+            if (resultData.data[0].hasOwnProperty(prop)) {
+                if (!firstIteration) {
+                    const label = document.createElement("label");
+                    label.textContent = prop;
+                    label.for = prop;
+        
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.id = prop;
+        
+                    form.appendChild(label);
+                    form.appendChild(input);
+                } else {
+                    firstIteration = false;
+                }
+            }
+        }
+        
+        const button = document.createElement("button")
+        button.classList.add("createCarButton");
+        button.id = "createCarButton";
+        button.textContent = "Create";
+        form.appendChild(button);
 
+        // Llena la tabla con los datos
         const headerRow = document.createElement("tr");
         for (const prop in resultData.data[0]) {
             if (resultData.data[0].hasOwnProperty(prop)) {
