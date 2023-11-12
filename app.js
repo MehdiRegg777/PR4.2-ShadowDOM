@@ -35,7 +35,7 @@ db2.init({
   port: 3308,
   user: "root",
   password: "pwd",
-  database: "coches"
+  database: "Productos"
 })
 
 // Publicar arxius carpeta ‘public’ 
@@ -100,7 +100,7 @@ async function ajaxCall (req, res) {
       case 'actionDeleteCar':           result = await actionDeleteCar(objPost);break;
       case 'mostrarTabla':           result = await actionTabla(objPost);break;
       case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
-
+      case 'actionShowTabla':          result = await actionShowTabla(objPost); break;
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -218,7 +218,7 @@ async function actionCreateCar(objPost) {
     precio: precio
   };
 
-  const sqlQuery2 = `INSERT INTO coche (marca, modelo, any, color, precio) VALUES ('${ejemploUsuario.marca}', '${ejemploUsuario.modelo}', '${ejemploUsuario.any}', '${ejemploUsuario.color}', '${ejemploUsuario.precio}')`;
+  const sqlQuery2 = `INSERT INTO Coche (marca, modelo, any, color, precio) VALUES ('${ejemploUsuario.marca}', '${ejemploUsuario.modelo}', '${ejemploUsuario.any}', '${ejemploUsuario.color}', '${ejemploUsuario.precio}')`;
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult2 = await db2.query(sqlQuery2);
@@ -239,7 +239,7 @@ async function actionDeleteCar(objPost) {
   try {
       // Realizar la lógica para eliminar el automóvil en la base de datos
       // Ejemplo usando una consulta DELETE:
-      const deleteQuery = `DELETE FROM coche WHERE id = ${carIdToDelete}`;
+      const deleteQuery = `DELETE FROM Coche WHERE id = ${carIdToDelete}`;
       const queryResult = await db2.query(deleteQuery);
 
       // Comprueba el resultado y devuelve 'OK' si la eliminación fue exitosa
@@ -260,7 +260,7 @@ async function actionTabla() {
   try {
     // Realizar la lógica para obtener los datos de la base de datos
     // Ejemplo usando una consulta SELECT:
-    const mostrarTabla = `select * from coche`;
+    const mostrarTabla = `select * from Coche`;
     const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
     //console.log(queryResult);
     if (queryResult.length > 0) {
@@ -274,6 +274,25 @@ async function actionTabla() {
   }
 }
 
+// ****************** Mostrar tablas Creadas ******************************
+async function actionShowTabla() {
+  //console.log("si vaaaa");
+  try {
+    // Realizar la lógica para obtener los datos de la base de datos
+    // Ejemplo usando una consulta SELECT:
+    const mostrarTabla = `show tables;`;
+    const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
+    //console.log(queryResult);
+    if (queryResult.length > 0) {
+      return { result: 'OK', data: queryResult };
+    } else {
+      return { result: 'KO', message: 'No se encontraron coches' };
+    }
+  } catch (error) {
+    console.error("Error al obtener datos de coches:", error);
+    return { result: 'Error', error: error.message };
+  }
+}
 
 // *************************** MODIFY **********************************************************
 
@@ -287,7 +306,7 @@ async function actionGetCarInfo(objPost) {
     NewValue: NewValue
 
   };
-  const querymodyfy = `UPDATE coche SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
+  const querymodyfy = `UPDATE Coche SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
 
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta

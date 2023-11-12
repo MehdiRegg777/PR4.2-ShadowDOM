@@ -22,12 +22,12 @@ SET @old_autocommit=@@autocommit;
 
 /*!40000 DROP DATABASE IF EXISTS `world`*/;
 
-CREATE DATABASE `coches` DEFAULT CHARACTER SET utf8mb4;
+CREATE DATABASE `Productos` DEFAULT CHARACTER SET utf8mb4;
 
-USE `coches`;
+USE `Productos`;
 
 -- Crear una tabla llamada "Coches" para almacenar información de coches
-CREATE TABLE coche (
+CREATE TABLE Coche (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     Marca VARCHAR(50),
     Modelo VARCHAR(50),
@@ -36,12 +36,35 @@ CREATE TABLE coche (
     Precio INT
 );
 
+--
+
+CREATE TABLE Aviones (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Modelo VARCHAR(50),
+    Compania VARCHAR(50),
+    AnioFabricacion INT,
+    Capacidad INT
+);
+
+--
+
 -- Insertar algunos datos de ejemplo
-INSERT INTO coche (Marca, Modelo, Any, Color, Precio)
+INSERT INTO Coche (Marca, Modelo, Any, Color, Precio)
 VALUES ('Toyota', 'Corolla', 2020, 'Rojo', 18000);
 
-INSERT INTO coche (Marca, Modelo, any, Color, Precio)
+INSERT INTO Coche (Marca, Modelo, any, Color, Precio)
 VALUES ('Honda', 'Civic', 2019, 'Azul', 17000);
 
-INSERT INTO coche (Marca, Modelo, Any, Color, Precio)
+INSERT INTO Coche (Marca, Modelo, Any, Color, Precio)
 VALUES ('Ford', 'F-150', 2021, 'Negro', 28000);
+
+-- 
+
+INSERT INTO Aviones (Modelo, Compania, AnioFabricacion, Capacidad) 
+VALUES ('Boeing 737', 'Boeing', 2010, 150);
+
+INSERT INTO Aviones (Modelo, Compania, AnioFabricacion, Capacidad) 
+VALUES ('Airbus A320', 'Airbus', 2012, 180);
+
+INSERT INTO Aviones (Modelo, Compania, AnioFabricacion, Capacidad) 
+VALUES ('Embraer E190', 'Embraer', 2015, 110);

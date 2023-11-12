@@ -179,9 +179,11 @@ handleModButtonClick(event) {
 }
 
  // ****************** MOSTRAR TABLA ******************************
+ 
  async displayCoches() {
     try {
       const tbody = this.shadow.getElementById('tbodyId');
+      const thead = this.shadow.getElementById('theadId');
       console.log(tbody);
       if (tbody) {
         let data = {
@@ -193,17 +195,31 @@ handleModButtonClick(event) {
         if (resultData.result === 'OK') {
         // Borra filas existentes
         tbody.innerHTML = '';
+        thead.innerHTML = '';
+        // Llena la tabla con los datos
+
+        const headerRow = document.createElement("tr");
+        for (const prop in resultData.data[0]) {
+            if (resultData.data[0].hasOwnProperty(prop)) {
+                const th = document.createElement("th");
+                th.textContent = prop;
+                headerRow.appendChild(th);
+            }
+        }
+        thead.appendChild(headerRow);
+
+
         // Llena la tabla con los datos
         resultData.data.forEach(coche => {
             const row = document.createElement("tr");
-            row.innerHTML = `
-            <td>${coche.ID}</td>
-            <td>${coche.Marca}</td>
-            <td>${coche.Modelo}</td>
-            <td>${coche.Any}</td>
-            <td>${coche.Color}</td>
-            <td>${coche.Precio}</td>
-            `;
+            // Itera sobre las propiedades del objeto coche
+            for (const prop in coche) {
+                if (coche.hasOwnProperty(prop)) {
+                    const cell = document.createElement("td");
+                    cell.textContent = coche[prop];
+                    row.appendChild(cell);
+                }
+            }
             tbody.appendChild(row);
         });
         } else {
