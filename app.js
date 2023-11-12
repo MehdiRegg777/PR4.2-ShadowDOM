@@ -101,6 +101,7 @@ async function ajaxCall (req, res) {
       case 'mostrarTabla':           result = await actionTabla(objPost);break;
       case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
       case 'actionShowTabla':          result = await actionShowTabla(objPost); break;
+      case 'actionCreateTable':          result = await actionCreateTable(objPost); break;
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -257,8 +258,7 @@ async function actionDeleteCar(objPost) {
 // ****************** Mostrar las FILAS DE LAS TABLAS ******************************
 async function actionTabla(objPost) {
   let queTabla = objPost.queTabla;
-
-  console.log("Okk2 ".queTabla);
+  //console.log("Okk2");
   try {
     // Realizar la lógica para obtener los datos de la base de datos
     // Ejemplo usando una consulta SELECT:
@@ -278,7 +278,7 @@ async function actionTabla(objPost) {
 
 // ****************** Mostrar tablas Creadas ******************************
 async function actionShowTabla() {
-  console.log("Okk1");
+  //console.log("Okk1");
   try {
     // Realizar la lógica para obtener los datos de la base de datos
     // Ejemplo usando una consulta SELECT:
@@ -316,6 +316,31 @@ async function actionGetCarInfo(objPost) {
     //console.log('Query Result:', queryResult3); 
 
     return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
+  } catch (error) {
+    // Manejar errores, por ejemplo:
+    console.error("Error al ejecutar la consulta:", error);
+    return { result: 'Error', error: error.message };
+  }
+}
+
+// ******************* FUNCION CREAR TABLAS *****************************
+async function actionCreateTable(objPost) {
+  let tableName = objPost.tableName;
+  let valoresInputs = objPost.valoresInputs;
+  let valoresSelects = objPost.valoresSelects;
+
+  const ejemploUsuario = {
+     tableName: tableName,
+  };
+  const columnas = valoresInputs.map((input, index) => `${input} ${valoresSelects[index]}`).join('(50), ');
+  const sqlQuery3 = `CREATE TABLE ${ejemploUsuario.tableName} (ID INT AUTO_INCREMENT PRIMARY KEY, ${columnas}(50));`;
+  console.log(sqlQuery3);
+  try {
+    // Realizar la consulta a la base de datos y esperar la respuesta
+    const queryResult3 = await db2.query(sqlQuery3);
+    console.log('Query Result:', queryResult3); 
+
+    return { result: 'Tablas', tableName: tableName};
   } catch (error) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);

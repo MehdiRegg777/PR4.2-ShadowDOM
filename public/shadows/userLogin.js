@@ -50,6 +50,11 @@ class UserLogin extends HTMLElement {
         button.addEventListener('click', this.actionDeleteCar.bind(this));
     });
 
+    // Agregar el event listener para el botón de "Create Tabla"
+    this.shadow.querySelectorAll('.createTableButton').forEach(button => {
+        button.addEventListener('click', this.CreateTable.bind(this));
+    });
+
     // ...
     this.shadow.querySelectorAll('.table2').forEach(button => {
         button.addEventListener('click', this.mostrarTablas.bind(this));
@@ -612,6 +617,49 @@ handleModButtonClick(event) {
         }
         return resultData
     }
+
+      // *******************CREACION de Tablas *************************
+  async CreateTable() {
+    var tableName = this.shadow.getElementById('tableName');
+    var columnFields = this.shadow.getElementById('columnFields');
+    console.log(columnFields);
+
+    if (columnFields) { // Verifica si el elemento existe
+        var inputs = columnFields.querySelectorAll('input');
+        var selects = columnFields.querySelectorAll('select');
+        console.log(inputs);
+
+        var valoresInputs = [];
+        var valoresSelects = [];
+
+        inputs.forEach(function(input) {
+            valoresInputs.push(input.value);
+        });
+
+        selects.forEach(function(select) {
+            valoresSelects.push(select.value);
+        });
+
+        
+    } else {
+        console.error('El elemento con id "columnFields" no se encontró en el DOM.');
+    }
+    let requestData = {
+        callType: 'actionCreateTable',
+        tableName: tableName.value,
+        valoresInputs: valoresInputs,
+        valoresSelects: valoresSelects,
+
+    }
+    let resultData = await this.callServer(requestData)
+    if (resultData.result == 'Tablas') {
+        this.setUserInfo(resultData.tableName)
+        this.showView('viewInfo')
+    } else {
+        console.log("Fallo");
+    }      
+    
+}
 }
 
 // Defineix l'element personalitzat
