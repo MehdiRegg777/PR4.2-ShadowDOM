@@ -61,6 +61,7 @@ class UserLogin extends HTMLElement {
         this.displayCoches();
         // ...
 
+        // CREACION TABLA //
         const columnNumberInput = this.shadow.querySelector('#columnNumber');
         const columnFields = this.shadow.querySelector('#columnFields');
 
@@ -94,6 +95,10 @@ class UserLogin extends HTMLElement {
 
             columnFields.style.display = 'block';
         });
+
+
+
+        
 
         // Automàticament, validar l'usuari per 'token' (si n'hi ha)
         await this.actionCheckUserByToken()
