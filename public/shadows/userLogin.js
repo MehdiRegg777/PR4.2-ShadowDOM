@@ -32,7 +32,7 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpPasswordCheck').addEventListener('input', this.checkSignUpPasswords.bind(this))
         this.shadow.querySelector('#signUpBtn').addEventListener('click', this.actionSignUp.bind(this))
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
-
+        this.shadow.getElementById('opciones2').addEventListener('click', this.displayCoches.bind(this))
       ////
       this.shadow.querySelectorAll('.modButton').forEach(button => {
         button.addEventListener('click', this.handleModButtonClick.bind(this));
@@ -49,17 +49,25 @@ class UserLogin extends HTMLElement {
     this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
         button.addEventListener('click', this.actionDeleteCar.bind(this));
     });
-    ///
-    // this.shadow.querySelectorAll('.table').forEach(button => {
-    //     button.addEventListener('click', this.displayCoches.bind(this));
-    // });
-    this.shadow.querySelectorAll('.table').forEach(button => {
+
+    // ...
+    this.shadow.querySelectorAll('.table2').forEach(button => {
+        button.addEventListener('click', this.mostrarTablas.bind(this));
+      });
+      
+    // Llamar a displayCoches automáticamente al cargar la página
+    this.mostrarTablas();
+    ///////
+    
+    /* this.shadow.querySelectorAll('.table').forEach(button => {
         button.addEventListener('click', this.displayCoches.bind(this));
       });
       
     // Llamar a displayCoches automáticamente al cargar la página
-    this.displayCoches();
-    // ...
+    this.displayCoches(); */
+
+
+    
     // CREACION TABLA //
     const columnNumberInput = this.shadow.querySelector('#columnNumber');
     const columnFields = this.shadow.querySelector('#columnFields');
@@ -211,16 +219,86 @@ handleModButtonClick(event) {
     // }
 }
 
+ // ****************** MOSTRAR TABLA Existentes******************************
+ 
+ async mostrarTablas() {
+    try {
+      const opciones = this.shadow.getElementById('opciones2');
+      console.log(opciones);
+      if (opciones) {
+        let data = {
+            callType: 'actionShowTabla'
+        };
+        let resultData = await this.callServer(data);
+        console.log(resultData);
+
+        if (resultData.result === 'OK') {
+        // Borra filas existentes
+        opciones.innerHTML = '';
+        // Establecer los atributos
+        let optionElement = document.createElement('option');
+
+        optionElement.value = '';
+        optionElement.textContent = 'Selecciona una opción';
+        optionElement.disabled = true;
+        optionElement.selected = true;
+        opciones.appendChild(optionElement);
+
+        resultData.data.forEach(producto => {
+            // Itera sobre las propiedades del objeto coche
+            for (const prop in producto) {
+                let optionElement = document.createElement('option');
+
+                // Asigna el texto de la propiedad como contenido del <option>
+                optionElement.textContent = producto[prop];
+
+                // Asigna el valor de la propiedad como valor del <option>
+                optionElement.value = producto[prop];
+                
+                // Agrega el <option> al elemento <select>
+                opciones.appendChild(optionElement);
+
+            }
+        });
+
+        //document.appendChild(opciones);
+
+        } else {
+            const opciones = this.shadow.getElementById('opciones2');
+  
+          // Muestra un mensaje de error si no se encontraron coches
+        }      
+    } else {
+        opciones.error("Elemento opciones no encontrado en el DOM");
+    }
+      
+    } catch (error) {
+
+      console.error("Error al mostrar coches:", error);
+      // Muestra un mensaje de error en caso de un error en la solicitud
+    }
+  }
+
+
+// *******************************************************************************************
+
  // ****************** MOSTRAR TABLA ******************************
  
- async displayCoches() {
+ async displayCoches(event) {
+    const Seleccionada = event.target;
+    const opcionSeleccionada = Seleccionada.value;
+    if (!opcionSeleccionada) {
+        opcionSeleccionada = Seleccionada.options[0].value;
+      }
+    console.log(opcionSeleccionada);
     try {
       const tbody = this.shadow.getElementById('tbodyId');
       const thead = this.shadow.getElementById('theadId');
       console.log(tbody);
       if (tbody) {
         let data = {
-            callType: 'mostrarTabla'
+            callType: 'mostrarTabla',
+            queTabla: opcionSeleccionada
         };
         let resultData = await this.callServer(data);
         console.log(resultData);
@@ -272,6 +350,7 @@ handleModButtonClick(event) {
       tbody.innerHTML = `<tr><td colspan="5">Error al obtener los datos de los coches</td></tr>`;
     }
   }
+
 
 
 // *******************************************************************************************

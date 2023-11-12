@@ -255,12 +255,14 @@ async function actionDeleteCar(objPost) {
 }
 
 // ****************** Mostrar las FILAS DE LAS TABLAS ******************************
-async function actionTabla() {
-  //console.log("si vaaaa");
+async function actionTabla(objPost) {
+  let queTabla = objPost.queTabla;
+
+  console.log("Okk2 ".queTabla);
   try {
     // Realizar la lógica para obtener los datos de la base de datos
     // Ejemplo usando una consulta SELECT:
-    const mostrarTabla = `select * from Coche`;
+    const mostrarTabla = `select * from ${queTabla}`;
     const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
     //console.log(queryResult);
     if (queryResult.length > 0) {
@@ -276,12 +278,12 @@ async function actionTabla() {
 
 // ****************** Mostrar tablas Creadas ******************************
 async function actionShowTabla() {
-  //console.log("si vaaaa");
+  console.log("Okk1");
   try {
     // Realizar la lógica para obtener los datos de la base de datos
     // Ejemplo usando una consulta SELECT:
-    const mostrarTabla = `show tables;`;
-    const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
+    const mostrarTabla2 = `show tables;`;
+    const queryResult = await db2.query(mostrarTabla2); // Asumiendo que tienes una conexión a la base de datos llamada "db"
     //console.log(queryResult);
     if (queryResult.length > 0) {
       return { result: 'OK', data: queryResult };
