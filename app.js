@@ -280,7 +280,7 @@ async function actionShowTabla() {
     // Ejemplo usando una consulta SELECT:
     const mostrarTabla2 = `show tables;`;
     const queryResult = await db2.query(mostrarTabla2); // Asumiendo que tienes una conexión a la base de datos llamada "db"
-    console.log(queryResult);
+    //console.log(queryResult);
     if (queryResult.length > 0) {
       return { result: 'OK', data: queryResult };
     } else {
@@ -310,7 +310,7 @@ async function actionGetCarInfo(objPost) {
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult3 = await db2.query(querymodyfy);
-    //console.log('Query Result:', queryResult3); 
+    console.log(queryResult3); 
 
     return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
   } catch (error) {
@@ -340,7 +340,9 @@ async function actionCreateTable(objPost) {
     const queryResult3 = await db2.query(sqlQuery3);
     const queryResult4 = await db2.query(sqlQuery4);
 
-    console.log('Query Result:', queryResult3); 
+    console.log(queryResult3); 
+    console.log(queryResult4); 
+
 
     return { result: 'Tablas', tableName: tableName};
   } catch (error) {
@@ -356,14 +358,15 @@ async function actionModyfyTable(objPost) {
   let casilla = objPost.casilla;
   let nuevoValor = objPost.nuevoValor;
   const tableName = objPost.tabla;
-
-
-  const querymodyfy = `ALTER TABLE ${tableName} CHANGE ${casilla} ${nuevoValor};`;
+  const dataType = objPost.valoresSelects2;
+  console.log(dataType);
+  const querymodyfy5 = `ALTER TABLE ${tableName} CHANGE ${casilla} ${nuevoValor} ${dataType};`;
+  console.log(querymodyfy5);
 
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
-    const queryResult3 = await db2.query(querymodyfy);
-    //console.log('Query Result:', queryResult3); 
+    const queryResult5 = await db2.query(querymodyfy5);
+    console.log(queryResult5); 
 
     return { result: 'Coches'};
   } catch (error) {

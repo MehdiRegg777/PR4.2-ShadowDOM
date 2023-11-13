@@ -715,6 +715,11 @@ async modifyTable() {
 
     let nuevoValor = this.shadow.querySelector('#nuevo_valor4').value;
 
+    var selects = columnFields.querySelectorAll('select');
+    selects.forEach(function(select) {
+        valoresSelects2.push(select.value);
+    });
+    console.log(valoresSelects2);
     // Obtener la información de la tabla desde el primer label
     let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
     //console.log(tabla);
@@ -724,7 +729,10 @@ async modifyTable() {
         casilla: opcionSeleccionada,
         nuevoValor: nuevoValor,
         tabla: tabla,
+        valoresSelects2: valoresSelects2,
     }
+    console.log(valoresSelects2);
+
     let resultData = await this.callServer(requestData)
     if (resultData.result == 'Tablas') {
         this.setUserInfo(resultData.tableName)
