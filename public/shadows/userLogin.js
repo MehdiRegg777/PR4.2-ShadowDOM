@@ -32,111 +32,125 @@ class UserLogin extends HTMLElement {
         this.shadow.querySelector('#signUpPasswordCheck').addEventListener('input', this.checkSignUpPasswords.bind(this))
         this.shadow.querySelector('#signUpBtn').addEventListener('click', this.actionSignUp.bind(this))
         this.shadow.querySelector('#signUpShowLoginForm').addEventListener('click', this.showView.bind(this, 'viewLoginForm', 'initial'))
-
+        this.shadow.getElementById('opciones2').addEventListener('click', this.displayCoches.bind(this))
       ////
       this.shadow.querySelectorAll('.modButton').forEach(button => {
         button.addEventListener('click', this.handleModButtonClick.bind(this));
-        });
-        // Agregar el event listener para el botón de "Create"
-        this.shadow.querySelectorAll('.createCarButton').forEach(button => {
-            button.addEventListener('click', this.actionCreate.bind(this));
-        });
-        // Agregar el event listener para el botón de "Modify"
-        this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
-            button.addEventListener('click', this.actionModifyCar.bind(this));
-        });
-        // Agregar el event listener para el botón de "delete"
-        this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
-            button.addEventListener('click', this.actionDeleteCar.bind(this));
-        });
-        ///
-        // this.shadow.querySelectorAll('.table').forEach(button => {
-        //     button.addEventListener('click', this.displayCoches.bind(this));
-        // });
-        this.shadow.querySelectorAll('.table').forEach(button => {
-            button.addEventListener('click', this.displayCoches.bind(this));
-        });
-        
-        // Llamar a displayCoches automáticamente al cargar la página
-        this.displayCoches();
-        // ...
-
-        // CREACION TABLA //
-        const columnNumberInput = this.shadow.querySelector('#columnNumber');
-        const columnFields = this.shadow.querySelector('#columnFields');
-
-        columnNumberInput.addEventListener('input', () => {
-            columnFields.innerHTML = '';
-
-            const numberOfColumns = parseInt(columnNumberInput.value, 10);
-
-            for (let i = 0; i < numberOfColumns; i++) {
-                const columnDiv = document.createElement('div');
-                columnDiv.classList.add('columnField');
-
-                const columnNameInput = document.createElement('input');
-                columnNameInput.placeholder = `Nombre columna ${i + 1}`;
-
-                const columnTypeSelect = document.createElement('select');
-                const varcharOption = document.createElement('option');
-                varcharOption.value = 'VARCHAR';
-                varcharOption.text = 'VARCHAR';
-                const intOption = document.createElement('option');
-                intOption.value = 'INT';
-                intOption.text = 'INT';
-                columnTypeSelect.appendChild(varcharOption);
-                columnTypeSelect.appendChild(intOption);
-
-                columnDiv.appendChild(columnNameInput);
-                columnDiv.appendChild(columnTypeSelect);
-
-                columnFields.appendChild(columnDiv);
-            }
-
-            columnFields.style.display = 'block';
-        });
-
-        const createTableButton = this.shadow.querySelector('#createTableButton');
-        createTableButton.addEventListener('click', this.actionCreateTable.bind(this));
+    });
     
-        // ... existing code ...
+    // Agregar el event listener para el botón de "Modify"
+    this.shadow.querySelectorAll('.modifyCarButton').forEach(button => {
+        button.addEventListener('click', this.actionModifyCar.bind(this));
+    });
+    // Agregar el event listener para el botón de "delete"
+    this.shadow.querySelectorAll('.deleteCarButton').forEach(button => {
+        button.addEventListener('click', this.actionDeleteCar.bind(this));
+    });
+
+    // Agregar el event listener para el botón de "Create Tabla"
+    this.shadow.querySelectorAll('.createTableButton').forEach(button => {
+        button.addEventListener('click', this.CreateTable.bind(this));
+    });
+
+    // ...
+    this.shadow.querySelectorAll('.table2').forEach(button => {
+        button.addEventListener('click', this.mostrarTablas.bind(this));
+      });
+      
+    // Llamar a displayCoches automáticamente al cargar la página
+    this.mostrarTablas();
+    ///////
+    // Agregar el event listener para el botón de "Create"
+
+    this.shadow.querySelectorAll('.createCarButton').forEach(button => {
+        console.log('Agregando event listener al botón');
+        button.addEventListener('click', this.actionCreate.bind(this));
+    });
     
+    /* this.shadow.querySelectorAll('.table').forEach(button => {
+        button.addEventListener('click', this.displayCoches.bind(this));
+      });
+      
+    // Llamar a displayCoches automáticamente al cargar la página
+    this.displayCoches(); */
 
 
+    
+    // CREACION TABLA //
+    const columnNumberInput = this.shadow.querySelector('#columnNumber');
+    const columnFields = this.shadow.querySelector('#columnFields');
 
-        
+    columnNumberInput.addEventListener('input', () => {
+        columnFields.innerHTML = '';
 
-        // Automàticament, validar l'usuari per 'token' (si n'hi ha)
-        await this.actionCheckUserByToken()
-    } 
+        const numberOfColumns = parseInt(columnNumberInput.value, 10);
+
+        for (let i = 0; i < numberOfColumns; i++) {
+            const columnDiv = document.createElement('div');
+            columnDiv.classList.add('columnField');
+
+            const columnNameInput = document.createElement('input');
+            columnNameInput.placeholder = `Nombre columna ${i + 1}`;
+
+            const columnTypeSelect = document.createElement('select');
+            const varcharOption = document.createElement('option');
+            varcharOption.value = 'VARCHAR';
+            varcharOption.text = 'VARCHAR';
+            const intOption = document.createElement('option');
+            intOption.value = 'INT';
+            intOption.text = 'INT';
+            columnTypeSelect.appendChild(varcharOption);
+            columnTypeSelect.appendChild(intOption);
+
+            columnDiv.appendChild(columnNameInput);
+            columnDiv.appendChild(columnTypeSelect);
+
+            columnFields.appendChild(columnDiv);
+        }
+
+        columnFields.style.display = 'block';
+    });
+
+    // Automàticament, validar l'usuari per 'token' (si n'hi ha)
+    await this.actionCheckUserByToken()
+} 
 
   // *******************CREACION FILAS *************************
   async actionCreate() {
-    let marcaInput = this.shadow.querySelector('#marcaInput')
-    let modeloInput = this.shadow.querySelector('#modeloInput')
-    let añoInput = this.shadow.querySelector('#añoInput')
-    let colorInput = this.shadow.querySelector('#colorInput')
-    let precioInput = this.shadow.querySelector('#precioInput')
-    // Mostrar la vista
-    this.showView('viewSignUpForm', 'loading')
+    // Obtener todos los inputs dentro del formulario
+    let inputs = this.shadow.querySelectorAll('#createCarForm2 input');
+    
+    // Crear un objeto para almacenar los datos del formulario
+    let requestData = { callType: 'actionCreateCar' };
 
-    let requestData = {
-        callType: 'actionCreateCar',
-        marca: marcaInput.value,
-        modelo: modeloInput.value,
-        any: añoInput.value,
-        color: colorInput.value,
-        precio: precioInput.value,
-    }
-    let resultData = await this.callServer(requestData)
+    // Obtener la información de la tabla desde el primer label
+    let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+    requestData.tabla = tabla;
+    
+    // Iterar sobre cada input y agregar su valor al objeto requestData
+    inputs.forEach(input => {
+        let inputId = input.id;
+        let inputValue = input.value;
+        requestData[inputId.toLowerCase()] = inputValue;
+    });
+    console.log(inputs);
+    console.log('actionCreate ejecutado');
+
+    // Mostrar la vista
+    this.showView('viewSignUpForm', 'loading');
+
+    // Enviar la solicitud al servidor
+    let resultData = await this.callServer(requestData);
+
+    // Verificar el resultado y mostrar la vista correspondiente
     if (resultData.result == 'Coches') {
-        this.setUserInfo(resultData.marca, resultData.modelo, resultData.any, resultData.color, resultData.precio)
-        this.showView('viewInfo')
+        this.setUserInfo(resultData.marca, resultData.modelo, resultData.any, resultData.color, resultData.precio);
+        this.showView('viewInfo');
     } else {
         console.log("Fallo");
     }      
-    
 }
+
  // ****************** ELIMINAR FILAS ******************************
  async actionDeleteCar() {
     let carIdToDelete = this.shadow.querySelector('#carIdToDelete').value;
@@ -222,14 +236,87 @@ handleModButtonClick(event) {
     // }
 }
 
+ // ****************** MOSTRAR TABLA Existentes******************************
+ 
+ async mostrarTablas() {
+    try {
+      const opciones = this.shadow.getElementById('opciones2');
+      console.log(opciones);
+      if (opciones) {
+        let data = {
+            callType: 'actionShowTabla'
+        };
+        let resultData = await this.callServer(data);
+        console.log(resultData);
+
+        if (resultData.result === 'OK') {
+        // Borra filas existentes
+        opciones.innerHTML = '';
+        // Establecer los atributos
+        let optionElement = document.createElement('option');
+
+        optionElement.value = '';
+        optionElement.textContent = 'Selecciona una opción';
+        optionElement.disabled = true;
+        optionElement.selected = true;
+        opciones.appendChild(optionElement);
+
+        resultData.data.forEach(producto => {
+            // Itera sobre las propiedades del objeto coche
+            for (const prop in producto) {
+                let optionElement = document.createElement('option');
+
+                // Asigna el texto de la propiedad como contenido del <option>
+                optionElement.textContent = producto[prop];
+
+                // Asigna el valor de la propiedad como valor del <option>
+                optionElement.value = producto[prop];
+                
+                // Agrega el <option> al elemento <select>
+                opciones.appendChild(optionElement);
+
+            }
+        });
+
+        //document.appendChild(opciones);
+
+        } else {
+            const opciones = this.shadow.getElementById('opciones2');
+  
+          // Muestra un mensaje de error si no se encontraron coches
+        }      
+    } else {
+        opciones.error("Elemento opciones no encontrado en el DOM");
+    }
+      
+    } catch (error) {
+
+      console.error("Error al mostrar coches:", error);
+      // Muestra un mensaje de error en caso de un error en la solicitud
+    }
+  }
+
+
+// *******************************************************************************************
+
  // ****************** MOSTRAR TABLA ******************************
- async displayCoches() {
+ 
+ async displayCoches(event) {
+    const Seleccionada = event.target;
+    const opcionSeleccionada = Seleccionada.value;
+    if (!opcionSeleccionada) {
+        opcionSeleccionada = Seleccionada.options[0].value;
+      }
+    console.log(opcionSeleccionada);
     try {
       const tbody = this.shadow.getElementById('tbodyId');
+      const thead = this.shadow.getElementById('theadId');
+      const form = this.shadow.getElementById('createCarForm2');
       console.log(tbody);
       if (tbody) {
         let data = {
-            callType: 'mostrarTabla'
+            callType: 'mostrarTabla',
+            queTabla: opcionSeleccionada
         };
         let resultData = await this.callServer(data);
         console.log(resultData);
@@ -237,17 +324,60 @@ handleModButtonClick(event) {
         if (resultData.result === 'OK') {
         // Borra filas existentes
         tbody.innerHTML = '';
+        thead.innerHTML = '';
+        let tabla = resultData.tabla;
+        console.log(tabla);
+        form.innerHTML = '';
+        let firstIteration = true;
+        for (const prop in resultData.data[0]) {
+            if (resultData.data[0].hasOwnProperty(prop)) {
+                if (!firstIteration) {
+                    const label = document.createElement("label");
+                    label.textContent = prop;
+                    label.for = prop;
+                    label.setAttribute("tabla", tabla);
+
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.id = prop;
+        
+                    form.appendChild(label);
+                    form.appendChild(input);
+                } else {
+                    firstIteration = false;
+                }
+            }
+        }
+        
+        /* const button = document.createElement("button")
+        button.classList.add("createCarButton");
+        button.id = "createCarButton";
+        button.textContent = " Create ";
+        form.appendChild(button); */
+
+        // Llena la tabla con los datos
+        const headerRow = document.createElement("tr");
+        for (const prop in resultData.data[0]) {
+            if (resultData.data[0].hasOwnProperty(prop)) {
+                const th = document.createElement("th");
+                th.textContent = prop;
+                headerRow.appendChild(th);
+            }
+        }
+        thead.appendChild(headerRow);
+
+
         // Llena la tabla con los datos
         resultData.data.forEach(coche => {
             const row = document.createElement("tr");
-            row.innerHTML = `
-            <td>${coche.ID}</td>
-            <td>${coche.Marca}</td>
-            <td>${coche.Modelo}</td>
-            <td>${coche.Any}</td>
-            <td>${coche.Color}</td>
-            <td>${coche.Precio}</td>
-            `;
+            // Itera sobre las propiedades del objeto coche
+            for (const prop in coche) {
+                if (coche.hasOwnProperty(prop)) {
+                    const cell = document.createElement("td");
+                    cell.textContent = coche[prop];
+                    row.appendChild(cell);
+                }
+            }
             tbody.appendChild(row);
         });
         } else {
@@ -269,46 +399,9 @@ handleModButtonClick(event) {
   }
 
 
+
 // *******************************************************************************************
 
-
-
-
-
-  // Add a new method for handling the "Crear Tabla" button click
-async actionCreateTable() {
-    const tableName = this.shadow.querySelector('#tableName').value;
-    const numberOfColumns = parseInt(this.shadow.querySelector('#columnNumber').value, 10);
-    const columns = [];
-
-    for (let i = 0; i < numberOfColumns; i++) {
-        const columnNameInput = this.shadow.querySelector(`#columnFields > div:nth-child(${i + 1}) > input`);
-        const columnTypeSelect = this.shadow.querySelector(`#columnFields > div:nth-child(${i + 1}) > select`);
-
-        const columnName = columnNameInput.value;
-        const columnType = columnTypeSelect.value;
-
-        columns.push(`${columnName} ${columnType}`);
-    }
-
-    // Send a request to create the table
-    const response = await fetch('/ajaxCall', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            callType: 'createTable',
-            tableName: tableName,
-            columns: columns.join(', '), // Join columns into a string
-        }),
-    });
-
-    const result = await response.json();
-
-    // Handle the result as needed (display a message, update UI, etc.)
-    console.log(result);
-}
     checkSignUpPasswords () {
         // Valida que les dues contrasenyes del 'signUp' siguin iguals
         let refPassword = this.shadow.querySelector('#signUpPassword')
@@ -566,6 +659,49 @@ async actionCreateTable() {
         }
         return resultData
     }
+
+      // *******************CREACION de Tablas *************************
+  async CreateTable() {
+    var tableName = this.shadow.getElementById('tableName');
+    var columnFields = this.shadow.getElementById('columnFields');
+    console.log(columnFields);
+
+    if (columnFields) { // Verifica si el elemento existe
+        var inputs = columnFields.querySelectorAll('input');
+        var selects = columnFields.querySelectorAll('select');
+        console.log(inputs);
+
+        var valoresInputs = [];
+        var valoresSelects = [];
+
+        inputs.forEach(function(input) {
+            valoresInputs.push(input.value);
+        });
+
+        selects.forEach(function(select) {
+            valoresSelects.push(select.value);
+        });
+
+        
+    } else {
+        console.error('El elemento con id "columnFields" no se encontró en el DOM.');
+    }
+    let requestData = {
+        callType: 'actionCreateTable',
+        tableName: tableName.value,
+        valoresInputs: valoresInputs,
+        valoresSelects: valoresSelects,
+
+    }
+    let resultData = await this.callServer(requestData)
+    if (resultData.result == 'Tablas') {
+        this.setUserInfo(resultData.tableName)
+        this.showView('viewInfo')
+    } else {
+        console.log("Fallo");
+    }      
+    
+}
 }
 
 // Defineix l'element personalitzat

@@ -1,17 +1,17 @@
 {
   "name": "ajax",
   "version": "1.0.0",
-  "description": "Exemple de Shadow DOM interactuant amb AJAX a NodeJS.",
+  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test\" && exit 1",
-    "dev": "nodemon ./app.js --ext js,html,css",
+    "dev": "nodemon ./app.js  --ext js,html,css",
     "app": "pm2 start ./app.js",
     "pm2List": "pm2 list",
     "pm2Delete": "pm2 delete app"
   },
   "author": "",
-  "license": "ISC",
+  "license": "",
   "dependencies": {
     "express": "^4.18.2",
     "mysql2": "^3.6.1",

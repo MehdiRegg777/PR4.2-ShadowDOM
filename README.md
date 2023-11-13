@@ -18,19 +18,20 @@ npm install
 ```bash
 npm run dev
 ```
+
+## Obrir el navegador a la direcció
+
+[http://localhost:8888](http://localhost:3000)
+
+## En mode desenvolupament (amb el shadow DOM complet), la direcció és:
+
+[http://localhost:8888/index-dev.html](http://localhost:3000/index-dev.html)
+
 ## Instalar imagen base de datos mysql en doker
-
-```bash
-docker run --name mysqlUsers -p 3308:3306 -e MYSQL_ROOT_PASSWORD=pwd -d mysql
-```
-
-## Ejecutar las tablas de sql desde windows
-
 
 ```bash
 Get-Content .\BaseDatosUser.sql | docker exec -i mysqlUsers mysql -uroot -ppwd
 ```
-
 ```bash
 Get-Content .\coches.sql | docker exec -i mysqlUsers mysql -uroot -ppwd
 ```

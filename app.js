@@ -35,7 +35,7 @@ db2.init({
   port: 3308,
   user: "root",
   password: "pwd",
-  database: "coches"
+  database: "Productos"
 })
 
 // Publicar arxius carpeta ‘public’ 
@@ -57,13 +57,9 @@ process.on('SIGTERM', shutDown);
 process.on('SIGINT', shutDown);
 function shutDown() {
   console.log('Received kill signal, shutting down gracefully');
-  httpServer.close(() => {
-      console.log('Server closed');
-      db2.end(() => {
-          console.log('Database connection closed');
-          process.exit(0);
-      });
-  });
+  httpServer.close()
+  db.end()
+  process.exit(0);
 }
 
 // Configurar la direcció '/index-dev.html' per retornar
@@ -104,9 +100,8 @@ async function ajaxCall (req, res) {
       case 'actionDeleteCar':           result = await actionDeleteCar(objPost);break;
       case 'mostrarTabla':           result = await actionTabla(objPost);break;
       case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
-      case 'createTable': // New case for creating a table
-      result = await createTable(objPost);
-      break;
+      case 'actionShowTabla':          result = await actionShowTabla(objPost); break;
+      case 'actionCreateTable':          result = await actionCreateTable(objPost); break;
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -123,7 +118,7 @@ async function actionCheckUserByToken (objPost) {
   let tokenValue = objPost.token
   // Si troba el token a les dades, retorna el nom d'usuari
   let users = await db.query('select * from users');
-  console.log(users, tokenValue)
+  //console.log(users, tokenValue)
   let user = users.find(u => u.token == tokenValue)
   if (!user) {
       return {result: 'KO'}
@@ -169,7 +164,7 @@ async function actionLogin(objPost) {
       };
       const sqlQuery = `UPDATE users SET token = '${edittoken.tokenn}' WHERE userName = '${edittoken.userName}'`;
       const queryResult = await db.query(sqlQuery);
-      console.log('Query Result:', queryResult);
+      //console.log('Query Result:', queryResult);
       return { result: 'OK', userName: user.userName, token: token };
     }
   } catch (error) {
@@ -211,26 +206,20 @@ async function actionSignUp(objPost) {
 
 // ******************* FUNCION INSERTAR COCHES EN LA TABLA *****************************
 async function actionCreateCar(objPost) {
-  let marca = objPost.marca;
-  let modelo = objPost.modelo;
-  let color = objPost.color;
-  let any = parseInt(objPost.any, 10);
-  let precio = parseInt(objPost.precio, 10);
-  const ejemploUsuario = {
-    marca: marca,
-    modelo: modelo,
-    any: any,
-    color: color,
-    precio: precio
-  };
+  console.log(objPost);
 
-  const sqlQuery2 = `INSERT INTO coche (marca, modelo, any, color, precio) VALUES ('${ejemploUsuario.marca}', '${ejemploUsuario.modelo}', '${ejemploUsuario.any}', '${ejemploUsuario.color}', '${ejemploUsuario.precio}')`;
+  const tableName = objPost.tabla;
+  const columns = Object.keys(objPost).filter(key => key !== 'callType' && key !== 'tabla');
+  const values = columns.map(column => `'${objPost[column]}'`).join(', ');
+
+  const sqlQuery2 = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${values})`;
+  console.log(sqlQuery2);
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult2 = await db2.query(sqlQuery2);
     console.log('Query Result:', queryResult2); 
 
-    return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
+    return { result: 'Productos Creados'};
   } catch (error) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);
@@ -238,14 +227,14 @@ async function actionCreateCar(objPost) {
   }
 }
 
-// ****************** FUNCION ELIMINAR FILA DE LA TABLA ******************************
+// ****************** FUCNION ELIMINAR FILA DE LA TABLA ******************************
 async function actionDeleteCar(objPost) {
   let carIdToDelete = objPost.carId;
 
   try {
       // Realizar la lógica para eliminar el automóvil en la base de datos
       // Ejemplo usando una consulta DELETE:
-      const deleteQuery = `DELETE FROM coche WHERE id = ${carIdToDelete}`;
+      const deleteQuery = `DELETE FROM Coche WHERE id = ${carIdToDelete}`;
       const queryResult = await db2.query(deleteQuery);
 
       // Comprueba el resultado y devuelve 'OK' si la eliminación fue exitosa
@@ -261,13 +250,34 @@ async function actionDeleteCar(objPost) {
 }
 
 // ****************** Mostrar las FILAS DE LAS TABLAS ******************************
-async function actionTabla() {
-  console.log("si vaaaa");
+async function actionTabla(objPost) {
+  let queTabla = objPost.queTabla;
+  //console.log("Okk2");
   try {
     // Realizar la lógica para obtener los datos de la base de datos
     // Ejemplo usando una consulta SELECT:
-    const mostrarTabla = `select * from coche`;
+    const mostrarTabla = `select * from ${queTabla}`;
     const queryResult = await db2.query(mostrarTabla); // Asumiendo que tienes una conexión a la base de datos llamada "db"
+    //console.log(queryResult);
+    if (queryResult.length > 0) {
+      return { result: 'OK', data: queryResult , tabla: queTabla};
+    } else {
+      return { result: 'KO', message: 'No se encontraron coches' };
+    }
+  } catch (error) {
+    console.error("Error al obtener datos de coches:", error);
+    return { result: 'Error', error: error.message };
+  }
+}
+
+// ****************** Mostrar tablas Creadas ******************************
+async function actionShowTabla() {
+  //console.log("Okk1");
+  try {
+    // Realizar la lógica para obtener los datos de la base de datos
+    // Ejemplo usando una consulta SELECT:
+    const mostrarTabla2 = `show tables;`;
+    const queryResult = await db2.query(mostrarTabla2); // Asumiendo que tienes una conexión a la base de datos llamada "db"
     console.log(queryResult);
     if (queryResult.length > 0) {
       return { result: 'OK', data: queryResult };
@@ -279,7 +289,6 @@ async function actionTabla() {
     return { result: 'Error', error: error.message };
   }
 }
-
 
 // *************************** MODIFY **********************************************************
 
@@ -293,12 +302,12 @@ async function actionGetCarInfo(objPost) {
     NewValue: NewValue
 
   };
-  const querymodyfy = `UPDATE coche SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
+  const querymodyfy = `UPDATE Coche SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
 
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult3 = await db2.query(querymodyfy);
-    console.log('Query Result:', queryResult3); 
+    //console.log('Query Result:', queryResult3); 
 
     return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
   } catch (error) {
@@ -308,27 +317,32 @@ async function actionGetCarInfo(objPost) {
   }
 }
 
+// ******************* FUNCION CREAR TABLAS *****************************
+async function actionCreateTable(objPost) {
+  let tableName = objPost.tableName;
+  let valoresInputs = objPost.valoresInputs;
+  let valoresSelects = objPost.valoresSelects;
 
-
-// Define the createTable function to handle the table creation
-async function createTable(objPost) {
+  const ejemploUsuario = {
+     tableName: tableName,
+  };
+  const columnas = valoresInputs.map((input, index) => `${input} ${valoresSelects[index]}`).join('(50), ');
+  const columnas2 = valoresInputs.map((input) => `${input}`).join(', ');
+  const sqlQuery3 = `CREATE TABLE ${ejemploUsuario.tableName} (ID INT AUTO_INCREMENT PRIMARY KEY, ${columnas}(50));`;
+  console.log(sqlQuery3);
+  const sqlQuery4 = `INSERT INTO ${ejemploUsuario.tableName} (${columnas2}) VALUES (${columnas2});`;
+  console.log(sqlQuery4);
   try {
-      const { tableName, columns } = objPost;
+    // Realizar la consulta a la base de datos y esperar la respuesta
+    const queryResult3 = await db2.query(sqlQuery3);
+    const queryResult4 = await db2.query(sqlQuery4);
 
-      // Create the SQL query to create the table
-      const createTableQuery = `CREATE TABLE ${tableName} (${columns})`;
+    console.log('Query Result:', queryResult3); 
 
-      // Execute the query
-      const queryResult = await db2.query(createTableQuery);
-
-      // Check if the table was created successfully
-      if (queryResult.affectedRows > 0) {
-          return { result: 'OK', message: 'Table created successfully' };
-      } else {
-          return { result: 'KO', message: 'Failed to create table' };
-      }
+    return { result: 'Tablas', tableName: tableName};
   } catch (error) {
-      console.error("Error creating table:", error);
-      return { result: 'Error', message: error.message };
+    // Manejar errores, por ejemplo:
+    console.error("Error al ejecutar la consulta:", error);
+    return { result: 'Error', error: error.message };
   }
 }

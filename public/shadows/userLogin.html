@@ -1,20 +1,21 @@
 <div class="root">
     <div id="viewInfo">
-        <div class="title">DB CONFIG</div>
+        <div class="title">Login info</div>
         <div id="infoUser">User Name</div>
         <div>
+            <button class="table2" id="table2" style="display: none;">Mostrar que tablas existen</button>
             <button class="table" id="table" style="display: none;">Mostrar tabla</button>
-            <p>Base de datos de: </p>
+            <br>
+            <form id="ShowBameTables">
+                <label for="opciones2">Base de datos de:</label>
+                <select id="opciones2" name="opciones2">
+
+                </select>
+            </form>
+           
             <table id="cochesTable">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Marca</th>
-                    <th>Modelo</th>
-                    <th>Año</th>
-                    <th>Color</th>
-                    <th>Precio</th>
-                  </tr>
+                <thead id="theadId">
+
                 </thead>
                 <tbody id="tbodyId">
                   <!-- Los datos se mostrarán aquí -->
@@ -30,35 +31,27 @@
         <button class="modButton" id="CreateTable" data-view-type="CreateTable">Create Table</button>
         <button class="modButton" id="ModifyTable" data-view-type="ModifyTable">Modify Table</button>
         <button class="modButton" id="DeleteTable" data-view-type="DeleteTable">Delete Table</button>
-     
-        <br>
+
         <div class="modView" id="CreateMod" style="display: none;">
-            <h6 class="title2">Create a car</h6>
+            <h6 class="title2">Create</h6>
             <!-- Contenido de Create -->
             <form id="createCarForm">
-                <label for="marcaInput">Marca:</label>
-            <input type="text" id="marcaInput">
+                <!-- <label>Marca</label><input type="text" id="Marca">
+                <label>Modelo</label><input type="text" id="Modelo">
+                <label>Any</label><input type="text" id="Any">
+                <label>Color</label><input type="text" id="Color">
+                <label>Precio</label><input type="text" id="Precio"> -->
+                <div id="createCarForm2">
 
-            <label for="modeloInput">Modelo:</label>
-            <input type="text" id="modeloInput">
-
-            <label for="añoInput">Año:</label>
-            <input type="text" id="añoInput">
-
-            <label for="colorInput">Color:</label>
-            <input type="text" id="colorInput">
-
-            <label for="precioInput">Precio:</label>
-            <input type="text" id="precioInput">
-
-            <button class="createCarButton" id="createCarButton">Create Car</button>
+                </div>
+                <button class="createCarButton" id="createCarButton"> Crear </button>
             </form>
         </div>
         <div class="modView" id="ModifyMod" style="display: none;">
-            <h6 class="title2">Modify a car</h6>
+            <h6 class="title2">Modify</h6>
             <!-- Contenido de Modify -->
             <form id="modifyCarForm">
-                <label for="carIdToModify">ID del Coche a Modificar:</label>
+                <label for="carIdToModify">ID a Modificar:</label>
                 <input type="text" id="carIdToModify"><br>
                 <label for="opciones">Selecciona una opción a modificar:</label>
                 <select id="opciones" name="opcion">
@@ -72,17 +65,17 @@
                 <label for="nuevo_valor">Nuevo valor:</label>
                 <input type="text" id="nuevo_valor" name="nuevo_valor">
                 
-                <button class="modifyCarButton" id="modifyCarButton" style="display: none;">modify Car</button>
+                <button class="modifyCarButton" id="modifyCarButton"> Modificar </button>
             </form>
         </div>
         <div class="modView" id="Deletemod" style="display: none;">
-            <h6 class="title2">Delete a car</h6>
+            <h6 class="title2">Delete</h6>
             <!-- Contenido de Delete -->
             <form id="deleteCarForm">
-                <label for="carIdToDelete">ID del Coche a Eliminar:</label>
+                <label for="carIdToDelete">ID a Eliminar:</label>
                 <input type="text" id="carIdToDelete"> <!-- Campo para ingresar el ID del coche -->
         
-                <button class="deleteCarButton" id="deleteCarButton">Eliminar Coche</button>
+                <button class="deleteCarButton" id="deleteCarButton"> Eliminar </button>
             </form>
             <div id="cocheInfo"></div>
         </div>
@@ -99,10 +92,13 @@
             </form>
 
             <!-- Formulario dinámico para las columnas -->
+
             <div id="columnFields" style="display: none;"></div>
 
+            
+
             <!-- Botón para crear la tabla -->
-            <button id="createTableButton">Crear Tabla</button>
+            <button class="createTableButton" id="createTableButton">Crear Tabla</button>
         </div>
 
         
@@ -128,7 +124,6 @@
             
         </div>
 
-        
         </div>
         <div id="infoLoading" class="loading">Loading ...</div>
         <div class="row">
