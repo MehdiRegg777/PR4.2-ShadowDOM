@@ -71,15 +71,6 @@ class UserLogin extends HTMLElement {
         button.addEventListener('click', this.actionCreate.bind(this));
     });
     
-    /* this.shadow.querySelectorAll('.table').forEach(button => {
-        button.addEventListener('click', this.displayCoches.bind(this));
-      });
-      
-    // Llamar a displayCoches automáticamente al cargar la página
-    this.displayCoches(); */
-
-
-    
     // CREACION TABLA //
     const columnNumberInput = this.shadow.querySelector('#columnNumber');
     const columnFields = this.shadow.querySelector('#columnFields');
@@ -235,19 +226,6 @@ handleModButtonClick(event) {
     if (viewToShow) {
         viewToShow.style.removeProperty('display');
     }
-
-    // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
-    // switch (viewType) {
-    //     case 'Create':
-    //         // Acciones específicas para Create
-    //         break;
-    //     case 'Modify':
-    //         // Acciones específicas para Modify
-    //         break;
-    //     case 'Delete':
-    //         // Acciones específicas para Delete
-    //         break;
-    // }
 }
 
  // ****************** MOSTRAR TABLA Existentes******************************
@@ -318,10 +296,6 @@ handleModButtonClick(event) {
  async displayCoches(event) {
     const opcionesMody = this.shadow.getElementById('opciones');
     const opcionesModyTable = this.shadow.getElementById('opciones4');
-    // Borra filas existentes
-    opcionesMody.innerHTML = '';
-    // Borra filas existentes
-    opcionesModyTable.innerHTML = '';
     const Seleccionada = event.target;
     const opcionSeleccionada = Seleccionada.value;
     if (!opcionSeleccionada) {
@@ -340,14 +314,16 @@ handleModButtonClick(event) {
         };
         let resultData = await this.callServer(data);
         console.log(resultData);
-
         if (resultData.result === 'OK') {
         // Borra filas existentes
         tbody.innerHTML = '';
         thead.innerHTML = '';
+        opcionesMody.innerHTML = '';
+        opcionesModyTable.innerHTML = '';
+        form.innerHTML = '';
+        ///Obtener en que tabla estamos tratando
         let tabla = resultData.tabla;
         console.log(tabla);
-        form.innerHTML = '';
         let firstIteration = true;
         for (const prop in resultData.data[0]) {
             if (resultData.data[0].hasOwnProperty(prop)) {
@@ -385,12 +361,6 @@ handleModButtonClick(event) {
                 }
             }
         }
-        
-        /* const button = document.createElement("button")
-        button.classList.add("createCarButton");
-        button.id = "createCarButton";
-        button.textContent = " Create ";
-        form.appendChild(button); */
 
         // Llena la tabla con los datos
         const headerRow = document.createElement("tr");
@@ -402,7 +372,6 @@ handleModButtonClick(event) {
             }
         }
         thead.appendChild(headerRow);
-
 
         // Llena la tabla con los datos
         resultData.data.forEach(coche => {
@@ -434,8 +403,6 @@ handleModButtonClick(event) {
       tbody.innerHTML = `<tr><td colspan="5">Error al obtener los datos de los coches</td></tr>`;
     }
   }
-
-
 
 // *******************************************************************************************
 
