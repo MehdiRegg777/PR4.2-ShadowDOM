@@ -52,6 +52,10 @@ class UserLogin extends HTMLElement {
         button.addEventListener('click', this.CreateTable.bind(this));
     });
 
+     // Agregar el event listener para el botón de "modify Create Tabla"
+     this.shadow.querySelectorAll('.modifyTableButton').forEach(button => {
+        button.addEventListener('click', this.modifyTable.bind(this));
+    });
     // ...
     this.shadow.querySelectorAll('.table2').forEach(button => {
         button.addEventListener('click', this.mostrarTablas.bind(this));
@@ -725,6 +729,34 @@ handleModButtonClick(event) {
         valoresInputs: valoresInputs,
         valoresSelects: valoresSelects,
 
+    }
+    let resultData = await this.callServer(requestData)
+    if (resultData.result == 'Tablas') {
+        this.setUserInfo(resultData.tableName)
+        this.showView('viewInfo')
+    } else {
+        console.log("Fallo");
+    }      
+    
+}
+
+      // *******************Modify de Tablas *************************
+
+async modifyTable() {
+    let opcionesSelect = this.shadow.querySelector('#opciones4');
+    let opcionSeleccionada = opcionesSelect.options[opcionesSelect.selectedIndex].value;
+
+    let nuevoValor = this.shadow.querySelector('#nuevo_valor4').value;
+
+    // Obtener la información de la tabla desde el primer label
+    let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+    //console.log(tabla);
+
+    let requestData = {
+        callType: 'actionModyfyTable',
+        casilla: opcionSeleccionada,
+        nuevoValor: nuevoValor,
+        tabla: tabla,
     }
     let resultData = await this.callServer(requestData)
     if (resultData.result == 'Tablas') {

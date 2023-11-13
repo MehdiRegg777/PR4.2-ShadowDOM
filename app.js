@@ -102,6 +102,7 @@ async function ajaxCall (req, res) {
       case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
       case 'actionShowTabla':          result = await actionShowTabla(objPost); break;
       case 'actionCreateTable':          result = await actionCreateTable(objPost); break;
+      case 'actionModyfyTable':          result = await actionModyfyTable(objPost); break;
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -342,6 +343,29 @@ async function actionCreateTable(objPost) {
     console.log('Query Result:', queryResult3); 
 
     return { result: 'Tablas', tableName: tableName};
+  } catch (error) {
+    // Manejar errores, por ejemplo:
+    console.error("Error al ejecutar la consulta:", error);
+    return { result: 'Error', error: error.message };
+  }
+}
+
+// *************************** MODIFY Columna Tabla **********************************************************
+
+async function actionModyfyTable(objPost) {
+  let casilla = objPost.casilla;
+  let nuevoValor = objPost.nuevoValor;
+  const tableName = objPost.tabla;
+
+
+  const querymodyfy = `ALTER TABLE ${tableName} CHANGE ${casilla} ${nuevoValor};`;
+
+  try {
+    // Realizar la consulta a la base de datos y esperar la respuesta
+    const queryResult3 = await db2.query(querymodyfy);
+    //console.log('Query Result:', queryResult3); 
+
+    return { result: 'Coches'};
   } catch (error) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);
