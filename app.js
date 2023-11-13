@@ -344,7 +344,7 @@ async function actionCreateTable(objPost) {
     console.log(queryResult4); 
 
 
-    return { result: 'Tablas', tableName: tableName};
+    return { result: 'Tablas', tableName: queryResult3};
   } catch (error) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);
@@ -358,17 +358,18 @@ async function actionModyfyTable(objPost) {
   let casilla = objPost.casilla;
   let nuevoValor = objPost.nuevoValor;
   const tableName = objPost.tabla;
-  const dataType = objPost.valoresSelects2;
-  console.log(dataType);
-  const querymodyfy5 = `ALTER TABLE ${tableName} CHANGE ${casilla} ${nuevoValor} ${dataType};`;
-  console.log(querymodyfy5);
+  const ValorType = objPost.selectsType;
+  //console.log(ValorType);
+  
+  const querymodyfy = `ALTER TABLE ${tableName} CHANGE ${casilla} ${nuevoValor} ${ValorType}(50);`;
+
 
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
-    const queryResult5 = await db2.query(querymodyfy5);
-    console.log(queryResult5); 
+    const queryResult3 = await db2.query(querymodyfy);
+    console.log('Query Result:', queryResult3); 
 
-    return { result: 'Coches'};
+  return { result: 'Tablas', tableName: queryResult3};
   } catch (error) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);

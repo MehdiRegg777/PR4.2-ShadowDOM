@@ -86,23 +86,23 @@
             </form>  
         </div>
 
-        <!-- BOTON MODIFICAR TABLA -->
-        <div class="modView" id="ModifyTableMod" style="display: none;">
-            <h6 class="title2">Modify Table</h6>
-            <!-- Contenido de Create -->
-            <form id="modifyCarForm">
-                <label for="opciones4">Selecciona la Columna a modificar:</label>
-                <select id="opciones4" name="opcion"></select>
-                <label for="nuevo_valor4">Nuevo valor:</label>
-                <input type="text" id="nuevo_valor4" name="nuevo_valor4">
-                <select>
-                    <option value="VARCHAR">VARCHAR</option>
-                    <option value="INT">INT</option>
-                </select>
-                <br>     
-                <button class="modifyTableButton" id="modifyTableButton"> Modify Table </button>
-            </form>            
-        </div>
+       <!-- BOTON MODIFICAR TABLA -->
+       <div class="modView" id="ModifyTableMod" style="display: none;">
+        <h6 class="title2">Modify Table</h6>
+        <!-- Contenido de Create -->
+        <form id="modifyCarForm">
+            <label for="opciones4">Selecciona la Columna a modificar:</label>
+            <select id="opciones4" name="opcion"></select>
+            <label for="nuevo_valor4">Nuevo valor:</label>
+            <input type="text" id="nuevo_valor4" name="nuevo_valor4">
+            <select id="selectColumnType">
+                <option value="VARCHAR">VARCHAR</option>
+                <option value="INT">INT</option>
+            </select>
+            <br>    
+            <button class="modifyTableButton" id="modifyTableButton"> Modify Table </button>
+        </form>            
+    </div>
 
         <!-- BOTON ELIMINAR TABLA -->
         <div class="modView" id="DeleteTableMod" style="display: none;">
