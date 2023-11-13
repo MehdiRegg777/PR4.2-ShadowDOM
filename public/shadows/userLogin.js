@@ -366,9 +366,16 @@ handleModButtonClick(event) {
                     optionElement2.textContent = prop;
                     // Asigna el valor de la propiedad como valor del <option>
                     optionElement2.value = prop;
+
+                    let optionElement4 = document.createElement('option');
+                    // Asigna el texto de la propiedad como contenido del <option>
+                    optionElement4.textContent = prop;
+                    // Asigna el valor de la propiedad como valor del <option>
+                    optionElement4.value = prop;
+
                     // Agrega el <option> al elemento <select>
                     opcionesMody.appendChild(optionElement2);
-                    opcionesModyTable.appendChild(optionElement2);
+                    opcionesModyTable.appendChild(optionElement4);
                 } else {
                     firstIteration = false;
                 }
