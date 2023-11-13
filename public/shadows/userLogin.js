@@ -158,9 +158,14 @@ class UserLogin extends HTMLElement {
     // Mostrar la vista
     this.showView('viewSignUpForm', 'loading');
 
+    // Obtener la información de la tabla desde el primer label
+    let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+    //console.log(tabla);
+
     let requestData = {
         callType: 'actionDeleteCar',
         carId: carIdToDelete,
+        tabla: tabla,
     };
 
     let resultData = await this.callServer(requestData);
@@ -185,6 +190,10 @@ class UserLogin extends HTMLElement {
 
         let nuevoValor = this.shadow.querySelector('#nuevo_valor').value;
 
+        // Obtener la información de la tabla desde el primer label
+        let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+        //console.log(tabla);
+
     
         this.showView('viewSignUpForm', 'loading');
 
@@ -193,6 +202,7 @@ class UserLogin extends HTMLElement {
         carId: carIdToModify,
         opcionSelect: opcionSeleccionada,
         NewValue: nuevoValor,
+        tabla: tabla,
     };
 
     let resultData = await this.callServer(requestData);
@@ -302,6 +312,12 @@ handleModButtonClick(event) {
  // ****************** MOSTRAR TABLA ******************************
  
  async displayCoches(event) {
+    const opcionesMody = this.shadow.getElementById('opciones');
+    const opcionesModyTable = this.shadow.getElementById('opciones4');
+    // Borra filas existentes
+    opcionesMody.innerHTML = '';
+    // Borra filas existentes
+    opcionesModyTable.innerHTML = '';
     const Seleccionada = event.target;
     const opcionSeleccionada = Seleccionada.value;
     if (!opcionSeleccionada) {
@@ -336,13 +352,23 @@ handleModButtonClick(event) {
                     label.textContent = prop;
                     label.for = prop;
                     label.setAttribute("tabla", tabla);
-
+                    const borrar = this.shadow.getElementById("detetebutton");
+                    borrar.setAttribute("tabla", tabla);
                     const input = document.createElement("input");
                     input.type = "text";
                     input.id = prop;
         
                     form.appendChild(label);
                     form.appendChild(input);
+
+                    let optionElement2 = document.createElement('option');
+                    // Asigna el texto de la propiedad como contenido del <option>
+                    optionElement2.textContent = prop;
+                    // Asigna el valor de la propiedad como valor del <option>
+                    optionElement2.value = prop;
+                    // Agrega el <option> al elemento <select>
+                    opcionesMody.appendChild(optionElement2);
+                    opcionesModyTable.appendChild(optionElement2);
                 } else {
                     firstIteration = false;
                 }

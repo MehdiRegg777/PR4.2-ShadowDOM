@@ -230,13 +230,14 @@ async function actionCreateCar(objPost) {
 // ****************** FUCNION ELIMINAR FILA DE LA TABLA ******************************
 async function actionDeleteCar(objPost) {
   let carIdToDelete = objPost.carId;
-
+  const tableName = objPost.tabla;
+  //console.log(tableName);
   try {
       // Realizar la lógica para eliminar el automóvil en la base de datos
       // Ejemplo usando una consulta DELETE:
-      const deleteQuery = `DELETE FROM Coche WHERE id = ${carIdToDelete}`;
+      const deleteQuery = `DELETE FROM ${tableName} WHERE id = ${carIdToDelete}`;
       const queryResult = await db2.query(deleteQuery);
-
+      //console.log(deleteQuery);
       // Comprueba el resultado y devuelve 'OK' si la eliminación fue exitosa
       if (queryResult.affectedRows > 0) {
           return { result: 'OK' };
@@ -296,13 +297,14 @@ async function actionGetCarInfo(objPost) {
   let carId = objPost.carId;
   let opcionSelect = objPost.opcionSelect;
   let NewValue = objPost.NewValue;
+  const tableName = objPost.tabla;
   const edittoken2 = {
     carId: carId,
     opcionSelect: opcionSelect,
     NewValue: NewValue
 
   };
-  const querymodyfy = `UPDATE Coche SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
+  const querymodyfy = `UPDATE ${tableName} SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
 
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta

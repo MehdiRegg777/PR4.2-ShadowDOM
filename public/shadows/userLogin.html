@@ -72,7 +72,7 @@
             <h6 class="title2">Delete</h6>
             <!-- Contenido de Delete -->
             <form id="deleteCarForm">
-                <label for="carIdToDelete">ID a Eliminar:</label>
+                <label for="carIdToDelete" id="detetebutton">ID a Eliminar:</label>
                 <input type="text" id="carIdToDelete"> <!-- Campo para ingresar el ID del coche -->
         
                 <button class="deleteCarButton" id="deleteCarButton"> Eliminar </button>
@@ -89,29 +89,27 @@
                 <br>
                 <label for="columnNumber">Número de columnas:</label>
                 <input type="number" id="columnNumber" min="1">
-            </form>
-
-            <!-- Formulario dinámico para las columnas -->
-
-            <div id="columnFields" style="display: none;"></div>
-
-            
-
-            <!-- Botón para crear la tabla -->
+                <!-- Formulario dinámico para las columnas -->
+                <div id="columnFields" style="display: none;"></div><br>
+                <!-- Botón para crear la tabla -->
             <button class="createTableButton" id="createTableButton">Crear Tabla</button>
+            </form>  
         </div>
-
-        
-
 
         <!-- BOTON MODIFICAR TABLA -->
         <div class="modView" id="ModifyTableMod" style="display: none;">
             <h6 class="title2">Modify Table</h6>
             <!-- Contenido de Create -->
-           
+            <form id="modifyCarForm">
+                <label for="opciones4">Selecciona la Columna a modificar:</label>
+                <select id="opciones4" name="opcion"></select>
+                <label for="nuevo_valor4">Nuevo valor:</label>
+                <input type="text" id="nuevo_valor4" name="nuevo_valor4">
+                <br>
 
-            <button class="modifyTableButton" id="modifyTableButton">Modify Table</button>
-            
+                
+                <button class="modifyTableButton" id="modifyTableButton"> Modify Table </button>
+            </form>            
         </div>
 
         <!-- BOTON ELIMINAR TABLA -->
