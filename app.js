@@ -103,6 +103,8 @@ async function ajaxCall (req, res) {
       case 'actionShowTabla':          result = await actionShowTabla(objPost); break;
       case 'actionCreateTable':          result = await actionCreateTable(objPost); break;
       case 'actionModyfyTable':          result = await actionModyfyTable(objPost); break;
+      case 'actionDeleteTable':          result = await actionDeleteTable(objPost); break;
+
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -375,4 +377,30 @@ async function actionModyfyTable(objPost) {
     console.error("Error al ejecutar la consulta:", error);
     return { result: 'Error', error: error.message };
   }
+
+}
+// *************************** DROP TABLE **********************************************************
+
+
+async function actionDeleteTable(objPost) {
+  const tableName = objPost.tabla;
+  //console.log(tableName);
+  try {
+      // Realizar la lógica para eliminar el automóvil en la base de datos
+      // Ejemplo usando una consulta DELETE:
+      const dropQuery = `DROP TABLE ${tableName}`;
+      const dropResult = await db2.query(dropQuery);
+      //console.log(deleteQuery);
+      // Comprueba el resultado y devuelve 'OK' si la eliminación fue exitosa
+      if (dropResult.affectedRows > 0) {
+          return { result: 'OK' };
+      } else {
+          return { result: 'KO', message: 'Car not found or could not be deleted' };
+      }
+  } catch (error) {
+      console.error("Error deleting car:", error);
+      return { result: 'Error', error: error.message };
+  }
+
+  
 }

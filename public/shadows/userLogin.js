@@ -70,6 +70,12 @@ class UserLogin extends HTMLElement {
         console.log('Agregando event listener al botón');
         button.addEventListener('click', this.actionCreate.bind(this));
     });
+
+
+    // Agregar el event listener para el botón de "Eliminar tabla"
+    this.shadow.querySelectorAll('.deleteTableButton').forEach(button => {
+        button.addEventListener('click', this.dropTable.bind(this));
+    });
     
     // CREACION TABLA //
     const columnNumberInput = this.shadow.querySelector('#columnNumber');
@@ -352,6 +358,10 @@ handleModButtonClick(event) {
                     optionElement4.textContent = prop;
                     // Asigna el valor de la propiedad como valor del <option>
                     optionElement4.value = prop;
+
+                    //Mostrar texto al eliminar tabla
+                    var selectElement = this.shadow.getElementById("quetabla");
+                    selectElement.textContent="Seguro que quieres eliminar la tabla: "+tabla;
 
                     // Agrega el <option> al elemento <select>
                     opcionesMody.appendChild(optionElement2);
@@ -741,6 +751,34 @@ async modifyTable() {
     }      
     
 }
+
+// *******************Eliminar de Tablas *************************
+
+
+async dropTable() {
+   
+
+    // Obtener la información de la tabla desde el primer label
+    let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+    //console.log(tabla);
+    
+
+
+    let requestData = {
+        callType: 'actionDeleteTable',
+        tabla: tabla,
+    };
+    console.log(requestData);
+    let resultData = await this.callServer(requestData);
+    if (resultData.result == 'Tablas') {
+        this.setUserInfo(resultData.tableName)
+        this.showView('viewInfo')
+    } else {
+        console.log("Fallo");
+    }      
+    
+}
+
 }
 
 // Defineix l'element personalitzat
