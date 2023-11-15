@@ -102,6 +102,7 @@ async function ajaxCall (req, res) {
       case 'actionGetCarInfo':          result = await actionGetCarInfo(objPost); break;
       case 'actionShowTabla':          result = await actionShowTabla(objPost); break;
       case 'actionCreateTable':          result = await actionCreateTable(objPost); break;
+      case 'actionModyfyTable':          result = await actionModyfyTable(objPost); break;
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -230,13 +231,14 @@ async function actionCreateCar(objPost) {
 // ****************** FUCNION ELIMINAR FILA DE LA TABLA ******************************
 async function actionDeleteCar(objPost) {
   let carIdToDelete = objPost.carId;
-
+  const tableName = objPost.tabla;
+  //console.log(tableName);
   try {
       // Realizar la lógica para eliminar el automóvil en la base de datos
       // Ejemplo usando una consulta DELETE:
-      const deleteQuery = `DELETE FROM Coche WHERE id = ${carIdToDelete}`;
+      const deleteQuery = `DELETE FROM ${tableName} WHERE id = ${carIdToDelete}`;
       const queryResult = await db2.query(deleteQuery);
-
+      //console.log(deleteQuery);
       // Comprueba el resultado y devuelve 'OK' si la eliminación fue exitosa
       if (queryResult.affectedRows > 0) {
           return { result: 'OK' };
@@ -278,7 +280,7 @@ async function actionShowTabla() {
     // Ejemplo usando una consulta SELECT:
     const mostrarTabla2 = `show tables;`;
     const queryResult = await db2.query(mostrarTabla2); // Asumiendo que tienes una conexión a la base de datos llamada "db"
-    console.log(queryResult);
+    //console.log(queryResult);
     if (queryResult.length > 0) {
       return { result: 'OK', data: queryResult };
     } else {
@@ -296,18 +298,19 @@ async function actionGetCarInfo(objPost) {
   let carId = objPost.carId;
   let opcionSelect = objPost.opcionSelect;
   let NewValue = objPost.NewValue;
+  const tableName = objPost.tabla;
   const edittoken2 = {
     carId: carId,
     opcionSelect: opcionSelect,
     NewValue: NewValue
 
   };
-  const querymodyfy = `UPDATE Coche SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
+  const querymodyfy = `UPDATE ${tableName} SET ${edittoken2.opcionSelect} = '${edittoken2.NewValue}' WHERE ID = ${edittoken2.carId}`;
 
   try {
     // Realizar la consulta a la base de datos y esperar la respuesta
     const queryResult3 = await db2.query(querymodyfy);
-    //console.log('Query Result:', queryResult3); 
+    console.log(queryResult3); 
 
     return { result: 'Coches', marca: marca, modelo: modelo, any: any, color: color, precio: precio};
   } catch (error) {
@@ -337,9 +340,36 @@ async function actionCreateTable(objPost) {
     const queryResult3 = await db2.query(sqlQuery3);
     const queryResult4 = await db2.query(sqlQuery4);
 
+    console.log(queryResult3); 
+    console.log(queryResult4); 
+
+
+    return { result: 'Tablas', tableName: queryResult3};
+  } catch (error) {
+    // Manejar errores, por ejemplo:
+    console.error("Error al ejecutar la consulta:", error);
+    return { result: 'Error', error: error.message };
+  }
+}
+
+// *************************** MODIFY Columna Tabla **********************************************************
+
+async function actionModyfyTable(objPost) {
+  let casilla = objPost.casilla;
+  let nuevoValor = objPost.nuevoValor;
+  const tableName = objPost.tabla;
+  const ValorType = objPost.selectsType;
+  //console.log(ValorType);
+  
+  const querymodyfy = `ALTER TABLE ${tableName} CHANGE ${casilla} ${nuevoValor} ${ValorType}(50);`;
+
+
+  try {
+    // Realizar la consulta a la base de datos y esperar la respuesta
+    const queryResult3 = await db2.query(querymodyfy);
     console.log('Query Result:', queryResult3); 
 
-    return { result: 'Tablas', tableName: tableName};
+  return { result: 'Tablas', tableName: queryResult3};
   } catch (error) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);

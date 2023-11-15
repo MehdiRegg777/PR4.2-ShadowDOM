@@ -36,11 +36,7 @@
             <h6 class="title2">Create</h6>
             <!-- Contenido de Create -->
             <form id="createCarForm">
-                <!-- <label>Marca</label><input type="text" id="Marca">
-                <label>Modelo</label><input type="text" id="Modelo">
-                <label>Any</label><input type="text" id="Any">
-                <label>Color</label><input type="text" id="Color">
-                <label>Precio</label><input type="text" id="Precio"> -->
+
                 <div id="createCarForm2">
 
                 </div>
@@ -54,13 +50,7 @@
                 <label for="carIdToModify">ID a Modificar:</label>
                 <input type="text" id="carIdToModify"><br>
                 <label for="opciones">Selecciona una opción a modificar:</label>
-                <select id="opciones" name="opcion">
-                    <option value="Marca">Marca</option>
-                    <option value="Modelo">Modelo</option>
-                    <option value="Any">Año</option>
-                    <option value="Color">Color</option>
-                    <option value="Precio">Precio</option>
-                </select>
+                <select id="opciones" name="opcion"></select>
                 <br>
                 <label for="nuevo_valor">Nuevo valor:</label>
                 <input type="text" id="nuevo_valor" name="nuevo_valor">
@@ -72,7 +62,7 @@
             <h6 class="title2">Delete</h6>
             <!-- Contenido de Delete -->
             <form id="deleteCarForm">
-                <label for="carIdToDelete">ID a Eliminar:</label>
+                <label for="carIdToDelete" id="detetebutton">ID a Eliminar:</label>
                 <input type="text" id="carIdToDelete"> <!-- Campo para ingresar el ID del coche -->
         
                 <button class="deleteCarButton" id="deleteCarButton"> Eliminar </button>
@@ -89,38 +79,38 @@
                 <br>
                 <label for="columnNumber">Número de columnas:</label>
                 <input type="number" id="columnNumber" min="1">
-            </form>
-
-            <!-- Formulario dinámico para las columnas -->
-
-            <div id="columnFields" style="display: none;"></div>
-
-            
-
-            <!-- Botón para crear la tabla -->
-            <button class="createTableButton" id="createTableButton">Crear Tabla</button>
+                <!-- Formulario dinámico para las columnas -->
+                <div id="columnFields" style="display: none;"></div><br>
+                <!-- Botón para crear la tabla -->
+                <br>
+                <button class="createTableButton" id="createTableButton">Crear Tabla</button>
+            </form>  
         </div>
 
-        
-
-
-        <!-- BOTON MODIFICAR TABLA -->
-        <div class="modView" id="ModifyTableMod" style="display: none;">
-            <h6 class="title2">Modify Table</h6>
-            <!-- Contenido de Create -->
-           
-
-            <button class="modifyTableButton" id="modifyTableButton">Modify Table</button>
-            
-        </div>
+       <!-- BOTON MODIFICAR TABLA -->
+       <div class="modView" id="ModifyTableMod" style="display: none;">
+        <h6 class="title2">Modify Table</h6>
+        <!-- Contenido de Create -->
+        <form id="modifyCarForm">
+            <label for="opciones4">Selecciona la Columna a modificar:</label>
+            <select id="opciones4" name="opcion"></select>
+            <label for="nuevo_valor4">Nuevo valor:</label>
+            <input type="text" id="nuevo_valor4" name="nuevo_valor4">
+            <select id="selectColumnType">
+                <option value="VARCHAR">VARCHAR</option>
+                <option value="INT">INT</option>
+            </select>
+            <br>    
+            <button class="modifyTableButton" id="modifyTableButton"> Modificar Table </button>
+        </form>            
+    </div>
 
         <!-- BOTON ELIMINAR TABLA -->
         <div class="modView" id="DeleteTableMod" style="display: none;">
             <h6 class="title2">Delete Table</h6>
             <!-- Contenido de Create -->
-           
 
-            <button class="deleteTableButton" id="deleteTableButton">Delete Table</button>
+            <button class="deleteTableButton" id="deleteTableButton">Eliminar Table</button>
             
         </div>
 

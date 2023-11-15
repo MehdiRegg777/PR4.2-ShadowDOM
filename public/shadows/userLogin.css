@@ -45,3 +45,76 @@
     background-color: #f2f2f2; /* Fondo alternado para filas impares */
   }
   
+  /* ********* */
+
+
+
+#createCarForm2 label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+#createCarForm2 input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* ********* */
+
+#modifyCarForm #createCarForm2{
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#infoBtnLogOut {
+  background-color: #af4ca8;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#createCarButton, #modifyCarButton, #deleteCarButton, 
+#createTableButton, #modifyTableButton, #deleteTableButton {
+  background-color: #af814c;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

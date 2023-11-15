@@ -52,6 +52,10 @@ class UserLogin extends HTMLElement {
         button.addEventListener('click', this.CreateTable.bind(this));
     });
 
+     // Agregar el event listener para el botón de "modify Create Tabla"
+     this.shadow.querySelectorAll('.modifyTableButton').forEach(button => {
+        button.addEventListener('click', this.modifyTable.bind(this));
+    });
     // ...
     this.shadow.querySelectorAll('.table2').forEach(button => {
         button.addEventListener('click', this.mostrarTablas.bind(this));
@@ -66,15 +70,6 @@ class UserLogin extends HTMLElement {
         console.log('Agregando event listener al botón');
         button.addEventListener('click', this.actionCreate.bind(this));
     });
-    
-    /* this.shadow.querySelectorAll('.table').forEach(button => {
-        button.addEventListener('click', this.displayCoches.bind(this));
-      });
-      
-    // Llamar a displayCoches automáticamente al cargar la página
-    this.displayCoches(); */
-
-
     
     // CREACION TABLA //
     const columnNumberInput = this.shadow.querySelector('#columnNumber');
@@ -158,9 +153,14 @@ class UserLogin extends HTMLElement {
     // Mostrar la vista
     this.showView('viewSignUpForm', 'loading');
 
+    // Obtener la información de la tabla desde el primer label
+    let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+    //console.log(tabla);
+
     let requestData = {
         callType: 'actionDeleteCar',
         carId: carIdToDelete,
+        tabla: tabla,
     };
 
     let resultData = await this.callServer(requestData);
@@ -185,6 +185,10 @@ class UserLogin extends HTMLElement {
 
         let nuevoValor = this.shadow.querySelector('#nuevo_valor').value;
 
+        // Obtener la información de la tabla desde el primer label
+        let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+        //console.log(tabla);
+
     
         this.showView('viewSignUpForm', 'loading');
 
@@ -193,6 +197,7 @@ class UserLogin extends HTMLElement {
         carId: carIdToModify,
         opcionSelect: opcionSeleccionada,
         NewValue: nuevoValor,
+        tabla: tabla,
     };
 
     let resultData = await this.callServer(requestData);
@@ -221,19 +226,6 @@ handleModButtonClick(event) {
     if (viewToShow) {
         viewToShow.style.removeProperty('display');
     }
-
-    // // Puedes realizar otras acciones relacionadas con el botón seleccionado si es necesario
-    // switch (viewType) {
-    //     case 'Create':
-    //         // Acciones específicas para Create
-    //         break;
-    //     case 'Modify':
-    //         // Acciones específicas para Modify
-    //         break;
-    //     case 'Delete':
-    //         // Acciones específicas para Delete
-    //         break;
-    // }
 }
 
  // ****************** MOSTRAR TABLA Existentes******************************
@@ -302,6 +294,8 @@ handleModButtonClick(event) {
  // ****************** MOSTRAR TABLA ******************************
  
  async displayCoches(event) {
+    const opcionesMody = this.shadow.getElementById('opciones');
+    const opcionesModyTable = this.shadow.getElementById('opciones4');
     const Seleccionada = event.target;
     const opcionSeleccionada = Seleccionada.value;
     if (!opcionSeleccionada) {
@@ -320,14 +314,16 @@ handleModButtonClick(event) {
         };
         let resultData = await this.callServer(data);
         console.log(resultData);
-
         if (resultData.result === 'OK') {
         // Borra filas existentes
         tbody.innerHTML = '';
         thead.innerHTML = '';
+        opcionesMody.innerHTML = '';
+        opcionesModyTable.innerHTML = '';
+        form.innerHTML = '';
+        ///Obtener en que tabla estamos tratando
         let tabla = resultData.tabla;
         console.log(tabla);
-        form.innerHTML = '';
         let firstIteration = true;
         for (const prop in resultData.data[0]) {
             if (resultData.data[0].hasOwnProperty(prop)) {
@@ -336,24 +332,35 @@ handleModButtonClick(event) {
                     label.textContent = prop;
                     label.for = prop;
                     label.setAttribute("tabla", tabla);
-
+                    const borrar = this.shadow.getElementById("detetebutton");
+                    borrar.setAttribute("tabla", tabla);
                     const input = document.createElement("input");
                     input.type = "text";
                     input.id = prop;
         
                     form.appendChild(label);
                     form.appendChild(input);
+
+                    let optionElement2 = document.createElement('option');
+                    // Asigna el texto de la propiedad como contenido del <option>
+                    optionElement2.textContent = prop;
+                    // Asigna el valor de la propiedad como valor del <option>
+                    optionElement2.value = prop;
+
+                    let optionElement4 = document.createElement('option');
+                    // Asigna el texto de la propiedad como contenido del <option>
+                    optionElement4.textContent = prop;
+                    // Asigna el valor de la propiedad como valor del <option>
+                    optionElement4.value = prop;
+
+                    // Agrega el <option> al elemento <select>
+                    opcionesMody.appendChild(optionElement2);
+                    opcionesModyTable.appendChild(optionElement4);
                 } else {
                     firstIteration = false;
                 }
             }
         }
-        
-        /* const button = document.createElement("button")
-        button.classList.add("createCarButton");
-        button.id = "createCarButton";
-        button.textContent = " Create ";
-        form.appendChild(button); */
 
         // Llena la tabla con los datos
         const headerRow = document.createElement("tr");
@@ -365,7 +372,6 @@ handleModButtonClick(event) {
             }
         }
         thead.appendChild(headerRow);
-
 
         // Llena la tabla con los datos
         resultData.data.forEach(coche => {
@@ -397,8 +403,6 @@ handleModButtonClick(event) {
       tbody.innerHTML = `<tr><td colspan="5">Error al obtener los datos de los coches</td></tr>`;
     }
   }
-
-
 
 // *******************************************************************************************
 
@@ -694,6 +698,41 @@ handleModButtonClick(event) {
 
     }
     let resultData = await this.callServer(requestData)
+    if (resultData.result == 'Tablas') {
+        this.setUserInfo(resultData.tableName)
+        this.showView('viewInfo')
+    } else {
+        console.log("Fallo");
+    }      
+    
+}
+
+      // *******************Modify de Tablas *************************
+
+async modifyTable() {
+    let opcionesSelect = this.shadow.querySelector('#opciones4');
+    let opcionSeleccionada = opcionesSelect.options[opcionesSelect.selectedIndex].value;
+
+    let nuevoValor = this.shadow.querySelector('#nuevo_valor4').value;
+
+    // Obtener el elemento select por su ID
+    var selectElement = this.shadow.getElementById("selectColumnType");
+    // Obtener el valor seleccionado
+    var selectedValue = selectElement.value;
+
+    // Obtener la información de la tabla desde el primer label
+    let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+    //console.log(tabla);
+
+    let requestData = {
+        callType: 'actionModyfyTable',
+        casilla: opcionSeleccionada,
+        nuevoValor: nuevoValor,
+        tabla: tabla,
+        selectsType: selectedValue,
+    };
+    console.log(requestData);
+    let resultData = await this.callServer(requestData);
     if (resultData.result == 'Tablas') {
         this.setUserInfo(resultData.tableName)
         this.showView('viewInfo')
