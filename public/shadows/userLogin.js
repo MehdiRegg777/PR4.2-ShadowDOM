@@ -764,7 +764,7 @@ async dropTable() {
 
 
     let requestData = {
-        callType: 'actionDeleteCar',
+        callType: 'actionDeleteTable',
         tabla: tabla,
     };
     console.log(requestData);

@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid')
 const database = require('./utilsMySQL.js')
 const shadowsObj = require('./utilsShadows.js')
 const app = express()
-const port = 3004
+const port = 3001
 
 // Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
 // let hash0 = crypto.createHash('md5').update("1234").digest("hex")
@@ -104,6 +104,7 @@ async function ajaxCall (req, res) {
       case 'actionCreateTable':          result = await actionCreateTable(objPost); break;
       case 'actionModyfyTable':          result = await actionModyfyTable(objPost); break;
       case 'actionDeleteCar':          result = await actionDeleteCar(objPost); break;
+      case 'actionDeleteTable':          result = await actionDeleteTable(objPost); break;
 
       default:
           result = {result: 'KO', message: 'Invalid callType'}
@@ -384,7 +385,7 @@ async function actionModyfyTable(objPost) {
 // *************************** DROP TABLE **********************************************************
 
 
-async function actionDeleteCar(objPost) {
+async function actionDeleteTable(objPost) {
   const tableName = objPost.tabla;
   //console.log(tableName);
   try {
