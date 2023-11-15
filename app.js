@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid')
 const database = require('./utilsMySQL.js')
 const shadowsObj = require('./utilsShadows.js')
 const app = express()
-const port = 3001
+const port = 3004
 
 // Gestionar usuaris en una variable (caldrà fer-ho a la base de dades)
 // let hash0 = crypto.createHash('md5').update("1234").digest("hex")
@@ -103,6 +103,8 @@ async function ajaxCall (req, res) {
       case 'actionShowTabla':          result = await actionShowTabla(objPost); break;
       case 'actionCreateTable':          result = await actionCreateTable(objPost); break;
       case 'actionModyfyTable':          result = await actionModyfyTable(objPost); break;
+      case 'actionDeleteCar':          result = await actionDeleteCar(objPost); break;
+
       default:
           result = {result: 'KO', message: 'Invalid callType'}
           break;
@@ -374,5 +376,31 @@ async function actionModyfyTable(objPost) {
     // Manejar errores, por ejemplo:
     console.error("Error al ejecutar la consulta:", error);
     return { result: 'Error', error: error.message };
+  }
+}
+
+
+
+// *************************** DROP TABLE **********************************************************
+
+
+async function actionDeleteCar(objPost) {
+  const tableName = objPost.tabla;
+  //console.log(tableName);
+  try {
+      // Realizar la lógica para eliminar el automóvil en la base de datos
+      // Ejemplo usando una consulta DELETE:
+      const dropQuery = `DROP TABLE ${tableName}`;
+      const dropResult = await db2.query(dropQuery);
+      //console.log(deleteQuery);
+      // Comprueba el resultado y devuelve 'OK' si la eliminación fue exitosa
+      if (dropResult.affectedRows > 0) {
+          return { result: 'OK' };
+      } else {
+          return { result: 'KO', message: 'Car not found or could not be deleted' };
+      }
+  } catch (error) {
+      console.error("Error deleting car:", error);
+      return { result: 'Error', error: error.message };
   }
 }

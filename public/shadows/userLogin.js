@@ -57,6 +57,13 @@ class UserLogin extends HTMLElement {
         button.addEventListener('click', this.modifyTable.bind(this));
     });
     // ...
+
+    this.shadow.querySelectorAll('.deleteTableButton').forEach(button => {
+        button.addEventListener('click', this.dropTable.bind(this));
+    });
+
+
+
     this.shadow.querySelectorAll('.table2').forEach(button => {
         button.addEventListener('click', this.mostrarTablas.bind(this));
       });
@@ -352,6 +359,10 @@ handleModButtonClick(event) {
                     optionElement4.textContent = prop;
                     // Asigna el valor de la propiedad como valor del <option>
                     optionElement4.value = prop;
+
+                    //Mostrar texto al eliminar tabla
+                    var selectElement = this.shadow.getElementById("quetabla");
+                    selectElement.textContent="Seguro que quieres eliminar la tabla: "+tabla;
 
                     // Agrega el <option> al elemento <select>
                     opcionesMody.appendChild(optionElement2);
@@ -741,6 +752,34 @@ async modifyTable() {
     }      
     
 }
+
+
+async dropTable() {
+   
+
+    // Obtener la información de la tabla desde el primer label
+    let tabla = this.shadow.querySelector('#createCarForm2 label').getAttribute('tabla');
+    //console.log(tabla);
+    
+
+
+    let requestData = {
+        callType: 'actionDeleteCar',
+        tabla: tabla,
+    };
+    console.log(requestData);
+    let resultData = await this.callServer(requestData);
+    if (resultData.result == 'Tablas') {
+        this.setUserInfo(resultData.tableName)
+        this.showView('viewInfo')
+    } else {
+        console.log("Fallo");
+    }      
+    
+}
+
+
+
 }
 
 // Defineix l'element personalitzat
